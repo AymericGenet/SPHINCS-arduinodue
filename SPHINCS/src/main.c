@@ -39,6 +39,8 @@
 #include "conf_board.h"
 #include "conf_clock.h"
 
+#include "BLAKE-256.h"
+
 #include "parameters.h"
 
 #define STRING_EOL    "\r"
@@ -84,6 +86,10 @@ static void configure_console(void)
 
 int main(void)
 {
+	char string[257];
+	u8 data[256], digest[32];
+	int i, len;
+
 	/* Initialize the SAM system */
 	sysclk_init();
 	board_init();
@@ -95,11 +101,36 @@ int main(void)
 	puts(STRING_HEADER);
 
 	while (1) {
-		char input[256];
+		/* Sets buffers to 0 */
+		for (i = 0; i < 256; ++i) {
+			string[i] = '\0';
+			data[i] = 0;
+			if (i < 32) {
+				digest[i] = 0;
+			}
+		}
+		string[256] = '\0';
+
 		puts("Please send a message...");
-		fgets(input, 256 , stdin);
-		
-		printf("\nReceived : %s\n", input);
+		fgets(string, 256, stdin);
+
+		len = 0;
+		puts("\nParsing message...\n");
+		for (i = 0; i < 256 && (string[i] != '\0' && string[i] != '\n'); ++i) {
+			data[i] = (unsigned char) string[i];
+			printf("%02x", data[i]);
+			++len;
+		}
+		printf("\nReceived (len = %i) : %s \n", len, string);
+
+		puts("Computing hash...\n");
+		crypto_hash_blake256(digest, data, len);
+
+		puts("Hashed : ");
+		for (i = 0; i < 32; ++i) {
+			printf("%02x", digest[i]);
+		}
+		printf("\n\n");
 	}
 }
 
