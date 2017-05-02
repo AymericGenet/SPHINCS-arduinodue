@@ -129,6 +129,8 @@
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
 </ArmGcc>
     </ToolchainSettings>
+    <OutputFileName>liblibCrypto</OutputFileName>
+    <OutputFileExtension>.a</OutputFileExtension>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="src\BLAKE-256.c">
@@ -143,7 +145,28 @@
     <Compile Include="src\BLAKE-512.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\chacha.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\crypto_chacha12.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\crypto_chacha12.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\defs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\ecrypt-config.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\ecrypt-machine.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\ecrypt-portable.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\ecrypt-sync.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
