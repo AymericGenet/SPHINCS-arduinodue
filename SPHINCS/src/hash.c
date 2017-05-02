@@ -158,7 +158,7 @@ int hash_chain_n(unsigned char * out, unsigned char const * in,
 }
 
 int hash_chain_n_mask(unsigned char * out, unsigned char const * in,
-                      unsigned char * masks, unsigned long long const chainlen)
+                      unsigned char const * masks, unsigned long long const chainlen)
 {
 	unsigned int i;
 

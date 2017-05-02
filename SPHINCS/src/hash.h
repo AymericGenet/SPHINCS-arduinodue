@@ -88,7 +88,7 @@ int hash_nn_n_mask(unsigned char * out, unsigned char const * in1,
  */
 
 int hash_chain_n(unsigned char * out, unsigned char const * in,
-                 unsigned char const * mask, unsigned long long const chainlen);
+                 unsigned long long const chainlen);
 
 /*
  * Hashes a message of SPHINCS_BYTES bytes in chain (chainlen times) to a
@@ -96,6 +96,6 @@ int hash_chain_n(unsigned char * out, unsigned char const * in,
  */
 
 int hash_chain_n_mask(unsigned char * out, unsigned char const * in,
-                      unsigned char const * mask, unsigned long long const chainlen);
+                      unsigned char const * masks, unsigned long long const chainlen);
 
 #endif /* HASH_H_ */
