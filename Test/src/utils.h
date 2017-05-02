@@ -25,10 +25,10 @@ extern unsigned char const in2_hashed_256[SPHINCS_BYTES];
 extern unsigned char const in2_hashed_512[2*SPHINCS_BYTES];
 
 /* sk : 64 bytes of random data */
-extern unsigned char const sk[SK_BYTES];
+extern unsigned char const in_sk[SK_BYTES];
 
 /* masks : 1024 bytes of random data */
-extern unsigned char const masks[MASKS_BYTES];
+extern unsigned char const in_masks[MASKS_BYTES];
 
 /*
  * Compares two arrays.

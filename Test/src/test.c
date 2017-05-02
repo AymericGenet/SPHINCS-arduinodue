@@ -43,6 +43,7 @@
 
 #include "minunit.h"
 
+#include "test_utils.h"
 #include "test_hash.h"
 #include "test_wotsp.h"
 #include "test_sphincs.h"
@@ -84,10 +85,11 @@ static void configure_console(void)
 }
 
 /* Test functions to execute */
-#define SUITES_AMOUNT 3
+#define SUITES_AMOUNT 4
 #define MAXIMUM_INPUT_LENGTH 2048
 
 void (*tests[SUITES_AMOUNT])(void) = {
+	run_test_utils,
 	run_test_hash,
 	run_test_wotsp,
 	run_test_sphincs

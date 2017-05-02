@@ -136,7 +136,7 @@ static char const * test_hash_nn_n(void)
 {
 	unsigned char out[SPHINCS_BYTES];
 
-	/* Expected output for in1_hashed_512 masked with in2_hashed_512 */
+	/* Expected output for in1_hashed_256 + in2_hashed_256 */
 	unsigned char const exp[SPHINCS_BYTES] = {
 		0x42, 0x17, 0x3b, 0xb4, 0x1e, 0x1d, 0x2b, 0x06,
 		0x53, 0xc1, 0xa8, 0xce, 0x6e, 0x8e, 0x5a, 0xd5,
@@ -144,12 +144,108 @@ static char const * test_hash_nn_n(void)
 		0xbb, 0xed, 0x4c, 0x96, 0xad, 0x4f, 0x74, 0xd5
 	};
 
-	/* Expected output for in1_hashed_256 + in2_hashed_256 */
+	/* in1_hashed_256 + in2_hashed_256 test case */
 	hash_nn_n(out, in1_hashed_256, in2_hashed_256);
 
 	mu_assert("Test case failed for IN1 + IN2.", array_cmp(out, exp, SPHINCS_BYTES));
 
 	return NULL; /* Pass */
+}
+
+static char const * test_hash_nn_n_mask(void)
+{
+	unsigned char out[SPHINCS_BYTES];
+
+	/* Expected output for in1_hashed_256 + in2_hashed_256 masked with in_masks */
+	unsigned char const exp[SPHINCS_BYTES] = {
+		0xe5, 0x30, 0x70, 0x5b, 0x76, 0x2c, 0x99, 0x96,
+		0xa5, 0xca, 0x60, 0x3b, 0x65, 0x64, 0x18, 0x42,
+		0xed, 0xf1, 0xec, 0x82, 0xef, 0x32, 0x74, 0x77,
+		0x71, 0x63, 0x59, 0xe1, 0x89, 0x97, 0xef, 0xda
+	};
+
+	/* in1_hashed_256 + in2_hashed_256 masked with in_masks test case */
+	hash_nn_n_mask(out, in1_hashed_256, in2_hashed_256, in_masks);
+
+	mu_assert("Test case failed for IN1 + IN2.", array_cmp(out, exp, SPHINCS_BYTES));
+
+	return NULL; /* Pass */
+}
+
+static char const * test_hash_chain_n(void)
+{
+	unsigned char out[SPHINCS_BYTES];
+
+	/* Expected output for in1_hashed_256 hashed in chain 8 times */
+	unsigned char const exp8[SPHINCS_BYTES] = {
+		0xa3, 0x56, 0xa1, 0x8e, 0x5f, 0x48, 0x32, 0x99,
+		0x21, 0xb2, 0x49, 0x01, 0x22, 0xa6, 0xaa, 0x44,
+		0x2a, 0x7b, 0xe8, 0x9f, 0xdc, 0x30, 0x11, 0x53,
+		0x42, 0x33, 0xde, 0xa7, 0x6d, 0xd1, 0x45, 0x70
+	};
+	/* Expected output for in1_hashed_256 hashed in chain 16 times */
+	unsigned char const exp16[SPHINCS_BYTES] = {
+		0xec, 0x95, 0xb6, 0x82, 0xf1, 0x8c, 0x07, 0xc2,
+		0xff, 0x80, 0xb3, 0x26, 0x92, 0xc8, 0x35, 0x8e,
+		0xdc, 0xa1, 0x10, 0xfd, 0x16, 0x4f, 0xda, 0xda,
+		0x0b, 0x81, 0xdd, 0x88, 0x39, 0xd6, 0xaa, 0x4f
+	};
+
+	/* in1_hashed_256 hashed 0 times in chain test case */
+	hash_chain_n(out, in1_hashed_256, 0);
+	mu_assert("Test case failed for chainlen = 0.", array_cmp(out, in1_hashed_256, SPHINCS_BYTES));
+
+	/* in1_hashed_256 hashed 8 times in chain test case */
+	hash_chain_n(out, in1_hashed_256, 8);
+	mu_assert("Test case failed for chainlen = 8.", array_cmp(out, exp8, SPHINCS_BYTES));
+
+	/* in1_hashed_256 hashed 16 times in chain test case */
+	hash_chain_n(out, in1_hashed_256, 16);
+	mu_assert("Test case failed for chainlen = 16.", array_cmp(out, exp16, SPHINCS_BYTES));
+
+	/* exp8 hashed 8 times in chain test case */
+	hash_chain_n(out, exp8, 8);
+	mu_assert("Test case failed for chainlen = 8 + 8.", array_cmp(out, exp16, SPHINCS_BYTES));
+
+	return NULL;
+}
+
+static char const * test_hash_chain_n_mask(void)
+{
+	unsigned char out[SPHINCS_BYTES];
+
+	/* Expected output for in1_hashed_256 hashed in chain 8 times */
+	unsigned char const exp8[SPHINCS_BYTES] = {
+		0x49, 0x89, 0xe3, 0x87, 0x76, 0xcf, 0x01, 0x84,
+		0x96, 0x23, 0x64, 0xbc, 0xb6, 0x33, 0x32, 0x3a,
+		0x04, 0x13, 0x6a, 0x42, 0xc3, 0xb2, 0xc4, 0xad,
+		0xe7, 0x30, 0xa2, 0xb6, 0x60, 0xe2, 0x48, 0x4f
+	};
+	/* Expected output for in1_hashed_256 hashed in chain 16 times */
+	unsigned char const exp16[SPHINCS_BYTES] = {
+		0xd8, 0x61, 0x4b, 0x42, 0x1f, 0x75, 0x99, 0x04,
+		0x7a, 0x76, 0x15, 0xf5, 0x3b, 0x9c, 0xff, 0xfa,
+		0xbf, 0x25, 0x93, 0x47, 0x34, 0x9d, 0x82, 0xa6,
+		0x53, 0x12, 0x16, 0x13, 0xf7, 0x95, 0xae, 0x2b
+	};
+
+	/* in1_hashed_256 hashed 0 times in chain with in_masks[:0] test case */
+	hash_chain_n_mask(out, in1_hashed_256, in_masks, 0);
+	mu_assert("Test case failed for chainlen = 0.", array_cmp(out, in1_hashed_256, SPHINCS_BYTES));
+
+	/* in1_hashed_256 hashed 8 times in chain with in_masks[:8] test case */
+	hash_chain_n_mask(out, in1_hashed_256, in_masks, 8);
+	mu_assert("Test case failed for chainlen = 8.", array_cmp(out, exp8, SPHINCS_BYTES));
+
+	/* in1_hashed_256 hashed 16 times in chain with in_masks[:16] test case */
+	hash_chain_n_mask(out, in1_hashed_256, in_masks, 16);
+	mu_assert("Test case failed for chainlen = 16.", array_cmp(out, exp16, SPHINCS_BYTES));
+
+	/* exp8 hashed 8 times in chain with in_masks[8:16] test case */
+	hash_chain_n_mask(out, exp8, in_masks + 8*SPHINCS_BYTES, 8);
+	mu_assert("Test case failed for chainlen = 8 + 8.", array_cmp(out, exp16, SPHINCS_BYTES));
+
+	return NULL;
 }
 
 void run_test_hash(void)
@@ -162,6 +258,9 @@ void run_test_hash(void)
 	mu_run_test(test_hash_2n_n, "test_hash_2n_n()");
 	mu_run_test(test_hash_2n_n_mask, "test_hash_2n_n_mask()");
 	mu_run_test(test_hash_nn_n, "test_hash_nn_n()");
+	mu_run_test(test_hash_nn_n_mask, "test_hash_nn_n_mask()");
+	mu_run_test(test_hash_chain_n, "test_hash_chain_n()");
+	mu_run_test(test_hash_chain_n_mask, "test_hash_chain_n_mask()");
 
 	printf("\n");
 }
