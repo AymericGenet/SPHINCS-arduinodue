@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Atmel Studio Solution File, Format Version 11.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Crypto", "Crypto\Crypto.cproj", "{095293A5-A086-49C1-9DE9-D92C51720EDC}"
+EndProject
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "SPHINCS", "SPHINCS\SPHINCS.cproj", "{DCE6C7E3-EE26-4D79-826B-08594B9AD897}"
 EndProject
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Crypto", "Crypto\Crypto.cproj", "{095293A5-A086-49C1-9DE9-D92C51720EDC}"
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Main", "Main\Main.cproj", "{10DF2125-2528-4688-A276-74471F9AA262}"
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Test", "Test\Test.cproj", "{E7A876AC-1DCA-4A78-807C-25EC6316BC07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +17,22 @@ Global
 		Release|ARM = Release|ARM
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|ARM.ActiveCfg = Debug|ARM
-		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|ARM.Build.0 = Debug|ARM
-		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|ARM.ActiveCfg = Release|ARM
-		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|ARM.Build.0 = Release|ARM
 		{095293A5-A086-49C1-9DE9-D92C51720EDC}.Debug|ARM.ActiveCfg = Debug|ARM
 		{095293A5-A086-49C1-9DE9-D92C51720EDC}.Debug|ARM.Build.0 = Debug|ARM
 		{095293A5-A086-49C1-9DE9-D92C51720EDC}.Release|ARM.ActiveCfg = Release|ARM
 		{095293A5-A086-49C1-9DE9-D92C51720EDC}.Release|ARM.Build.0 = Release|ARM
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|ARM.ActiveCfg = Debug|ARM
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|ARM.Build.0 = Debug|ARM
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|ARM.ActiveCfg = Release|ARM
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|ARM.Build.0 = Release|ARM
+		{10DF2125-2528-4688-A276-74471F9AA262}.Debug|ARM.ActiveCfg = Debug|ARM
+		{10DF2125-2528-4688-A276-74471F9AA262}.Debug|ARM.Build.0 = Debug|ARM
+		{10DF2125-2528-4688-A276-74471F9AA262}.Release|ARM.ActiveCfg = Release|ARM
+		{10DF2125-2528-4688-A276-74471F9AA262}.Release|ARM.Build.0 = Release|ARM
+		{E7A876AC-1DCA-4A78-807C-25EC6316BC07}.Debug|ARM.ActiveCfg = Debug|ARM
+		{E7A876AC-1DCA-4A78-807C-25EC6316BC07}.Debug|ARM.Build.0 = Debug|ARM
+		{E7A876AC-1DCA-4A78-807C-25EC6316BC07}.Release|ARM.ActiveCfg = Release|ARM
+		{E7A876AC-1DCA-4A78-807C-25EC6316BC07}.Release|ARM.Build.0 = Release|ARM
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
