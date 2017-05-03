@@ -12,7 +12,8 @@
 
 static char const * test_hash_any_n(void)
 {
-	unsigned char out[SPHINCS_BYTES];
+	unsigned char * out = malloc(SPHINCS_BYTES * sizeof(unsigned char));
+	mu_assert("Malloc returned NULL.", out != NULL);
 
 	/* in1 test case */
 	hash_any_n(out, in1, IN1_LEN);
@@ -24,12 +25,15 @@ static char const * test_hash_any_n(void)
 
 	mu_assert("Test case failed for IN2.", array_cmp(out, in2_hashed_256, SPHINCS_BYTES));
 
+	free(out);
+
 	return NULL; /* Pass */
 }
 
 static char const * test_hash_n_n(void)
 {
-	unsigned char out[SPHINCS_BYTES];
+	unsigned char * out = malloc(SPHINCS_BYTES * sizeof(unsigned char));
+	mu_assert("Malloc returned NULL.", out != NULL);
 
 	/* Expected output for in1_hashed_256 */
 	unsigned char const exp1[SPHINCS_BYTES] = {
@@ -56,12 +60,15 @@ static char const * test_hash_n_n(void)
 
 	mu_assert("Test case failed for IN2.", array_cmp(out, exp2, SPHINCS_BYTES));
 
+	free(out);
+
 	return NULL; /* Pass */
 }
 
 static char const * test_hash_n_n_mask(void)
 {
-	unsigned char out[SPHINCS_BYTES];
+	unsigned char * out = malloc(SPHINCS_BYTES * sizeof(unsigned char));
+	mu_assert("Malloc returned NULL.", out != NULL);
 
 	/* Expected output for in1_hashed_256 masked with in2_hashed_256 */
 	unsigned char const exp[SPHINCS_BYTES] = {
@@ -76,12 +83,15 @@ static char const * test_hash_n_n_mask(void)
 
 	mu_assert("Test case failed for IN1 masked with IN2.", array_cmp(out, exp, SPHINCS_BYTES));
 
+	free(out);
+
 	return NULL; /* Pass */
 }
 
 static char const * test_hash_2n_n(void)
 {
-	unsigned char out[SPHINCS_BYTES];
+	unsigned char * out = malloc(SPHINCS_BYTES * sizeof(unsigned char));
+	mu_assert("Malloc returned NULL.", out != NULL);
 
 	/* Expected output for in1_hashed_512 */
 	unsigned char const exp1[SPHINCS_BYTES] = {
@@ -109,12 +119,15 @@ static char const * test_hash_2n_n(void)
 
 	mu_assert("Test case failed for IN2.", array_cmp(out, exp2, SPHINCS_BYTES));
 
+	free(out);
+
 	return NULL; /* Pass */
 }
 
 static char const * test_hash_2n_n_mask(void)
 {
-	unsigned char out[SPHINCS_BYTES];
+	unsigned char * out = malloc(SPHINCS_BYTES * sizeof(unsigned char));
+	mu_assert("Malloc returned NULL.", out != NULL);
 
 	/* Expected output for in1_hashed_512 masked with in2_hashed_512 */
 	unsigned char const exp[SPHINCS_BYTES] = {
@@ -129,12 +142,15 @@ static char const * test_hash_2n_n_mask(void)
 
 	mu_assert("Test case failed for IN1 masked with IN2.", array_cmp(out, exp, SPHINCS_BYTES));
 
+	free(out);
+
 	return NULL; /* Pass */
 }
 
 static char const * test_hash_nn_n(void)
 {
-	unsigned char out[SPHINCS_BYTES];
+	unsigned char * out = malloc(SPHINCS_BYTES * sizeof(unsigned char));
+	mu_assert("Malloc returned NULL.", out != NULL);
 
 	/* Expected output for in1_hashed_256 + in2_hashed_256 */
 	unsigned char const exp[SPHINCS_BYTES] = {
@@ -149,12 +165,15 @@ static char const * test_hash_nn_n(void)
 
 	mu_assert("Test case failed for IN1 + IN2.", array_cmp(out, exp, SPHINCS_BYTES));
 
+	free(out);
+
 	return NULL; /* Pass */
 }
 
 static char const * test_hash_nn_n_mask(void)
 {
-	unsigned char out[SPHINCS_BYTES];
+	unsigned char * out = malloc(SPHINCS_BYTES * sizeof(unsigned char));
+	mu_assert("Malloc returned NULL.", out != NULL);
 
 	/* Expected output for in1_hashed_256 + in2_hashed_256 masked with in_masks */
 	unsigned char const exp[SPHINCS_BYTES] = {
@@ -169,12 +188,15 @@ static char const * test_hash_nn_n_mask(void)
 
 	mu_assert("Test case failed for IN1 + IN2.", array_cmp(out, exp, SPHINCS_BYTES));
 
+	free(out);
+
 	return NULL; /* Pass */
 }
 
 static char const * test_hash_chain_n(void)
 {
-	unsigned char out[SPHINCS_BYTES];
+	unsigned char * out = malloc(SPHINCS_BYTES * sizeof(unsigned char));
+	mu_assert("Malloc returned NULL.", out != NULL);
 
 	/* Expected output for in1_hashed_256 hashed in chain 8 times */
 	unsigned char const exp8[SPHINCS_BYTES] = {
@@ -207,12 +229,15 @@ static char const * test_hash_chain_n(void)
 	hash_chain_n(out, exp8, 8);
 	mu_assert("Test case failed for chainlen = 8 + 8.", array_cmp(out, exp16, SPHINCS_BYTES));
 
+	free(out);
+
 	return NULL;
 }
 
 static char const * test_hash_chain_n_mask(void)
 {
-	unsigned char out[SPHINCS_BYTES];
+	unsigned char * out = malloc(SPHINCS_BYTES * sizeof(unsigned char));
+	mu_assert("Malloc returned NULL.", out != NULL);
 
 	/* Expected output for in1_hashed_256 hashed in chain 8 times */
 	unsigned char const exp8[SPHINCS_BYTES] = {
@@ -244,6 +269,8 @@ static char const * test_hash_chain_n_mask(void)
 	/* exp8 hashed 8 times in chain with in_masks[8:16] test case */
 	hash_chain_n_mask(out, exp8, in_masks + 8*SPHINCS_BYTES, 8);
 	mu_assert("Test case failed for chainlen = 8 + 8.", array_cmp(out, exp16, SPHINCS_BYTES));
+
+	free(out);
 
 	return NULL;
 }
