@@ -21,7 +21,7 @@ int wotsp_keygen(unsigned char y[WOTS_L*SPHINCS_BYTES],
 	for (i = 0; i < WOTS_L; ++i)
 	{
 		hash_chain_n_mask(y + i*SPHINCS_BYTES, x + i*SPHINCS_BYTES,
-		                  masks + i*WOTS_MAX_INT*SPHINCS_BYTES, WOTS_MAX_INT - 1);
+		                  masks, WOTS_MAX_INT - 1);
 	}
 
 	return 0;
