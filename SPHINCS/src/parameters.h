@@ -34,8 +34,8 @@
 
 /* WOTS parameters and quantities */
 #define WOTS_W 4
-#define WOTS_MAX_INT 16 /* (1 << WOTS_W) */
-#define WOTS_L1 64 /* ceil(SPHINCS_SECURITY_PARAMETER/WOTS_W) */
+#define WOTS_MAX_INT 15 /* (1 << WOTS_W) - 1 */
+#define WOTS_L1 64 /* ceil(8*SPHINCS_BYTES/WOTS_W) */
 #define WOTS_L2 3 /* ceil(log2(WOTS_L1*(WOTS_MAX_INT-1))/WOTS_W) */
 #define WOTS_L 67 /* WOTS_L1 + WOTS_L2 */
 #define WOTS_LOG_L 7 /* log2(WOTS_L) */
