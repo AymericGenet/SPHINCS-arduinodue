@@ -36,7 +36,7 @@ static char const * test_array_cmp(void)
 	mu_assert("Test case for (arr1 != arr3) failed.", !array_cmp(arr1, arr3, SPHINCS_BYTES));
 	mu_assert("Test case for (arr3 != arr1) failed.", !array_cmp(arr3, arr1, SPHINCS_BYTES));
 
-	return NULL; /* Pass */
+	return ""; /* Success */
 }
 
 void run_test_utils(void)
