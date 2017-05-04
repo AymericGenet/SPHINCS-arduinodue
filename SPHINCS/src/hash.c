@@ -4,6 +4,7 @@
  */
 
 #include "BLAKE-256.h"
+#include "BLAKE-512.h"
 #include "crypto_chacha12.h"
 #include "parameters.h"
 #include "ecrypt-sync.h"
@@ -15,6 +16,13 @@ int hash_any_n(unsigned char * out, unsigned char const * in,
                unsigned long long const inlen)
 {
 	crypto_hash_blake256(out, in, inlen);
+	return 0;
+}
+
+int hash_any_2n(unsigned char * out, unsigned char const * in,
+                unsigned long long const inlen)
+{
+	crypto_hash_blake512(out, in, inlen);
 	return 0;
 }
 

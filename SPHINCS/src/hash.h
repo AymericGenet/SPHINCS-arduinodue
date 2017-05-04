@@ -16,6 +16,13 @@ int hash_any_n(unsigned char * out, unsigned char const * in,
                unsigned long long const inlen);
 
 /*
+ * Hashes messages of any bytes to digest of 2*SPHINCS_BYTES bytes.
+ */
+
+int hash_any_2n(unsigned char * out, unsigned char const * in,
+                unsigned long long const inlen);
+
+/*
  * Hashes messages of SPHINCS_BYTES bytes to digest of SPHINCS_BYTES bytes.
  *
  * The method specified by the SPHINCS documentation starts by expanding the
