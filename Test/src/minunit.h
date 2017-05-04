@@ -15,17 +15,16 @@ extern int tests_run;
 } while (0)
 
 #define mu_run_test(test, name) do { \
-	test_head(name); \
+	printf("Test %s... ", name); \
 	char const * message = test(); \
 	tests_run++; \
 	if (message) { \
-		test_failure; \
-		printf(" * %s\n", message); \
+		if (message[0] != '\0') { \
+			printf("[FAIL]\n * %s\n", message); \
+		} else { \
+			printf("[OK]\n"); \
+		} \
 	} else { \
-		test_success; \
+		printf("\n"); \
 	} \
 } while (0)
-
-#define test_head(name) printf("Test %s... ", name)
-#define test_success printf("[OK]\n")
-#define test_failure printf("[FAIL]\n")
