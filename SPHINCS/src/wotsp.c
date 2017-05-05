@@ -8,28 +8,19 @@
 #include "hash.h"
 #include "prng.h"
 
-static int split_4(unsigned long long out[WOTS_L],
-                   unsigned char const in[SPHINCS_BYTES])
-{
-	int i, c = 0;
-
-	for (i = 0; i < SPHINCS_BYTES; ++i)
-	{
-		out[2*i] = (in[i] >> WOTS_W) & 0x0f;
-		c += WOTS_MAX_INT - out[2*i];
-
-		out[(2*i)+1] = in[i] & 0x0f;
-		c += WOTS_MAX_INT - out[(2*i)+1];
-	}
-
-	for (i = 0; i < WOTS_L2; ++i)
-	{
-		out[WOTS_L1 + i] = c & 0x0f;
-		c = (c >> WOTS_W);
-	}
-
-	return 0;
-}
+#define SPLIT_4(i, b, digest, checksum) do { \
+	if (i < WOTS_L1) { \
+		if ((i & 1) == 0) { \
+			b = ((digest[i/2] >> WOTS_W) & 0x0f); \
+		} else { \
+			b = (digest[i/2] & 0x0f); \
+		} \
+		checksum += (WOTS_MAX_INT - b); \
+	} else { \
+		b = (checksum & 0x0f); \
+		checksum = (checksum >> WOTS_W); \
+	} \
+} while (0)
 
 int wotsp_keygen(unsigned char const sk1[SEED_BYTES],
                  unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
@@ -59,32 +50,16 @@ int wotsp_sign(unsigned char const digest[SPHINCS_BYTES],
                unsigned char const sk1[SEED_BYTES],
                unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
 {
-	int i, j, c;
-	unsigned long long b;
+	int i, j;
+	unsigned long long b, checksum;
 	unsigned char x[WOTS_L*SPHINCS_BYTES];
 
 	/* Recovers secret key with PRNG */
 	prng(x, WOTS_L*SPHINCS_BYTES, sk1);
 
-	for (i = 0, c = 0; i < WOTS_L; ++i)
+	for (i = 0, checksum = 0; i < WOTS_L; ++i)
 	{
-		if (i < WOTS_L1)
-		{
-			if ((i & 1) == 0)
-			{
-				b = ((digest[i/2] >> WOTS_W) & 0x0f);
-			}
-			else
-			{
-				b = (digest[i/2] & 0x0f);
-			}
-			c += (WOTS_MAX_INT - b);
-		}
-		else
-		{
-			b = c & 0x0f;
-			c = (c >> WOTS_W);
-		}
+		SPLIT_4(i, b, digest, checksum);
 
 		hash_chain_n_mask(x + i*SPHINCS_BYTES, x + i*SPHINCS_BYTES, masks, b);
 
@@ -103,29 +78,13 @@ int wotsp_verify(unsigned char const digest[SPHINCS_BYTES],
                  unsigned char const sig[WOTS_L*SPHINCS_BYTES],
                  unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
 {
-	int i, j, c;
-	unsigned long long b;
+	int i, j;
+	unsigned long long b, checksum;
 	unsigned char tmp[SPHINCS_BYTES];
 
-	for (i = 0, c = 0; i < WOTS_L; ++i)
+	for (i = 0, checksum = 0; i < WOTS_L; ++i)
 	{
-		if (i < WOTS_L1)
-		{
-			if ((i & 1) == 0)
-			{
-				b = ((digest[i/2] >> WOTS_W) & 0x0f);
-			}
-			else
-			{
-				b = (digest[i/2] & 0x0f);
-			}
-			c += (WOTS_MAX_INT - b);
-		}
-		else
-		{
-			b = c & 0x0f;
-			c = (c >> WOTS_W);
-		}
+		SPLIT_4(i, b, digest, checksum);
 
 		hash_chain_n_mask(tmp, sig + i*SPHINCS_BYTES,
 		                  masks + b*SPHINCS_BYTES,
