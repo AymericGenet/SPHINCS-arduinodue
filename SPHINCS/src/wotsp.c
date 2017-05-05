@@ -17,8 +17,7 @@
 		} \
 		checksum += (WOTS_MAX_INT - b); \
 	} else { \
-		b = (checksum & 0x0f); \
-		checksum = (checksum >> WOTS_W); \
+		b = ((checksum >> (WOTS_W*(WOTS_L - i - 1))) & 0x0f); \
 	} \
 } while (0)
 
