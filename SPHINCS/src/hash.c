@@ -35,7 +35,7 @@ int hash_n_n(unsigned char * out, unsigned char const * in)
 	for (i = 0; i < SPHINCS_BYTES/4; ++i)
 	{
 		tmp[i] = U8TO32_LITTLE(in + 4*i);
-		tmp[i + 8] = U8TO32_LITTLE(hash_const_c + 4*i);
+		tmp[i + SPHINCS_BYTES/4] = U8TO32_LITTLE(hash_const_c + 4*i);
 	}
 
 	/* Apply the permutation step of ChaCha12 */
@@ -74,7 +74,7 @@ int hash_2n_n(unsigned char * out, unsigned char const * in)
 	for(i = 0; i < SPHINCS_BYTES/4; ++i)
 	{
 		tmp[i] = U8TO32_LITTLE(in + 4*i);
-		tmp[i + 8] = U8TO32_LITTLE(hash_const_c + 4*i);
+		tmp[i + SPHINCS_BYTES/4] = U8TO32_LITTLE(hash_const_c + 4*i);
 	}
 
 	/* Apply the permutation step of ChaCha12 */

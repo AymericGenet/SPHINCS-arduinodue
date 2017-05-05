@@ -42,6 +42,7 @@
 #include "conf_clock.h"
 
 #include "minunit.h"
+#include "parameters.h"
 
 #include "test_utils.h"
 #include "test_hash.h"
@@ -86,7 +87,6 @@ static void configure_console(void)
 
 /* Test functions to execute */
 #define SUITES_AMOUNT 4
-#define MAXIMUM_INPUT_LENGTH 2048
 
 void (*tests[SUITES_AMOUNT])(void) = {
 	run_test_utils,
@@ -106,7 +106,7 @@ int tests_run = 0;
 
 int main(void)
 {
-	char input[MAXIMUM_INPUT_LENGTH];
+	char input[SPHINCS_BYTES];
 	int i;
 
 	/* Initialize the SAM system */
@@ -129,7 +129,8 @@ int main(void)
 	while (1)
 	{
 		/* Wait for input */
-		fgets(input, MAXIMUM_INPUT_LENGTH, stdin);
+		fgets(input, SPHINCS_BYTES, stdin);
+		printf("%s\n", input);
 	}
 }
 
