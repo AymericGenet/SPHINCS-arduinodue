@@ -31,47 +31,6 @@ static int split_4(unsigned long long out[WOTS_L],
 	return 0;
 }
 
-static unsigned long next_split_4(int idx,
-                                  unsigned char const in[SPHINCS_BYTES])
-{
-	int i, c = 0;
-
-	if (idx < WOTS_L1)
-	{
-		for (i = 0; i < SPHINCS_BYTES; ++i)
-		{
-			if (idx == 2*i)
-			{
-				return ((in[i] >> WOTS_W) & 0x0f);
-			}
-
-			if (idx == 2*i + 1)
-			{
-				return (in[i] & 0x0f);
-			}
-		}
-	}
-	else
-	{
-		for (i = 0; i < SPHINCS_BYTES; ++i)
-		{
-			c += WOTS_MAX_INT - ((in[i] >> WOTS_W) & 0x0f);
-			c += WOTS_MAX_INT - (in[i] & 0x0f);
-		}
-
-		for (i = 0; i < WOTS_L2; ++i)
-		{
-			if (i + WOTS_L1 == idx)
-			{
-				return (c & 0x0f);
-			}
-			c = (c >> WOTS_W);
-		}
-	}
-
-	return 0;
-}
-
 int wotsp_keygen(unsigned char const sk1[SEED_BYTES],
                  unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
 {
@@ -100,16 +59,33 @@ int wotsp_sign(unsigned char const digest[SPHINCS_BYTES],
                unsigned char const sk1[SEED_BYTES],
                unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
 {
-	int i, j;
+	int i, j, c;
 	unsigned long long b;
 	unsigned char x[WOTS_L*SPHINCS_BYTES];
 
 	/* Recovers secret key with PRNG */
 	prng(x, WOTS_L*SPHINCS_BYTES, sk1);
 
-	for (i = 0; i < WOTS_L; ++i)
+	for (i = 0, c = 0; i < WOTS_L; ++i)
 	{
-		b = next_split_4(i, digest);
+		if (i < WOTS_L1)
+		{
+			if ((i & 1) == 0)
+			{
+				b = ((digest[i/2] >> WOTS_W) & 0x0f);
+			}
+			else
+			{
+				b = (digest[i/2] & 0x0f);
+			}
+			c += (WOTS_MAX_INT - b);
+		}
+		else
+		{
+			b = c & 0x0f;
+			c = (c >> WOTS_W);
+		}
+
 		hash_chain_n_mask(x + i*SPHINCS_BYTES, x + i*SPHINCS_BYTES, masks, b);
 
 		/* Outputs on the stdout */
@@ -127,13 +103,30 @@ int wotsp_verify(unsigned char const digest[SPHINCS_BYTES],
                  unsigned char const sig[WOTS_L*SPHINCS_BYTES],
                  unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
 {
-	int i, j;
+	int i, j, c;
 	unsigned long long b;
 	unsigned char tmp[SPHINCS_BYTES];
 
-	for (i = 0; i < WOTS_L; ++i)
+	for (i = 0, c = 0; i < WOTS_L; ++i)
 	{
-		b = next_split_4(i, digest);
+		if (i < WOTS_L1)
+		{
+			if ((i & 1) == 0)
+			{
+				b = ((digest[i/2] >> WOTS_W) & 0x0f);
+			}
+			else
+			{
+				b = (digest[i/2] & 0x0f);
+			}
+			c += (WOTS_MAX_INT - b);
+		}
+		else
+		{
+			b = c & 0x0f;
+			c = (c >> WOTS_W);
+		}
+
 		hash_chain_n_mask(tmp, sig + i*SPHINCS_BYTES,
 		                  masks + b*SPHINCS_BYTES,
 		                  WOTS_MAX_INT - b);
