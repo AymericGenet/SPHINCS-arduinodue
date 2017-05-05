@@ -13,14 +13,14 @@
 static char const * hash_const_c = "expand 32-byte to 64-byte state!";
 
 int hash_any_n(unsigned char * out, unsigned char const * in,
-               unsigned long long const inlen)
+               unsigned long const inlen)
 {
 	crypto_hash_blake256(out, in, inlen);
 	return 0;
 }
 
 int hash_any_2n(unsigned char * out, unsigned char const * in,
-                unsigned long long const inlen)
+                unsigned long const inlen)
 {
 	crypto_hash_blake512(out, in, inlen);
 	return 0;
@@ -146,7 +146,7 @@ int hash_nn_n_mask(unsigned char * out, unsigned char const * in1,
 }
 
 int hash_chain_n(unsigned char * out, unsigned char const * in,
-                 unsigned long long const chainlen)
+                 unsigned long const chainlen)
 {
 	unsigned int i;
 
@@ -166,7 +166,7 @@ int hash_chain_n(unsigned char * out, unsigned char const * in,
 }
 
 int hash_chain_n_mask(unsigned char * out, unsigned char const * in,
-                      unsigned char const * masks, unsigned long long const chainlen)
+                      unsigned char const * masks, unsigned long const chainlen)
 {
 	unsigned int i;
 

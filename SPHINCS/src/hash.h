@@ -13,14 +13,14 @@
  */
 
 int hash_any_n(unsigned char * out, unsigned char const * in,
-               unsigned long long const inlen);
+               unsigned long const inlen);
 
 /*
  * Hashes messages of any bytes to digest of 2*SPHINCS_BYTES bytes.
  */
 
 int hash_any_2n(unsigned char * out, unsigned char const * in,
-                unsigned long long const inlen);
+                unsigned long const inlen);
 
 /*
  * Hashes messages of SPHINCS_BYTES bytes to digest of SPHINCS_BYTES bytes.
@@ -95,7 +95,7 @@ int hash_nn_n_mask(unsigned char * out, unsigned char const * in1,
  */
 
 int hash_chain_n(unsigned char * out, unsigned char const * in,
-                 unsigned long long const chainlen);
+                 unsigned long const chainlen);
 
 /*
  * Hashes a message of SPHINCS_BYTES bytes in chain (chainlen times) to a
@@ -103,6 +103,6 @@ int hash_chain_n(unsigned char * out, unsigned char const * in,
  */
 
 int hash_chain_n_mask(unsigned char * out, unsigned char const * in,
-                      unsigned char const * masks, unsigned long long const chainlen);
+                      unsigned char const * masks, unsigned long const chainlen);
 
 #endif /* HASH_H_ */

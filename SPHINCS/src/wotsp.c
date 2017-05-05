@@ -51,7 +51,7 @@ int wotsp_sign(unsigned char const digest[SPHINCS_BYTES],
                unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
 {
 	int i, j;
-	unsigned long long b, checksum;
+	unsigned long b, checksum;
 	unsigned char x[WOTS_L*SPHINCS_BYTES];
 
 	/* Recovers secret key with PRNG */
@@ -79,7 +79,7 @@ int wotsp_verify(unsigned char const digest[SPHINCS_BYTES],
                  unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
 {
 	int i, j;
-	unsigned long long b, checksum;
+	unsigned long b, checksum;
 	unsigned char tmp[SPHINCS_BYTES];
 
 	for (i = 0, checksum = 0; i < WOTS_L; ++i)
