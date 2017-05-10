@@ -88,6 +88,12 @@
     <Compile Include="src\prng.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\trees.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\trees.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\wotsp.c">
       <SubType>compile</SubType>
     </Compile>
