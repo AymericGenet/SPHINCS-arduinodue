@@ -532,6 +532,12 @@
     <Compile Include="src\test_SPHINCS.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\test_trees.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\test_trees.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\test_utils.c">
       <SubType>compile</SubType>
     </Compile>

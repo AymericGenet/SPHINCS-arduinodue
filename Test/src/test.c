@@ -47,6 +47,7 @@
 #include "test_utils.h"
 #include "test_hash.h"
 #include "test_wotsp.h"
+#include "test_trees.h"
 #include "test_sphincs.h"
 
 #define STRING_EOL    "\r"
@@ -86,12 +87,13 @@ static void configure_console(void)
 }
 
 /* Test functions to execute */
-#define SUITES_AMOUNT 4
+#define SUITES_AMOUNT 5
 
 void (*tests[SUITES_AMOUNT])(void) = {
 	run_test_utils,
 	run_test_hash,
 	run_test_wotsp,
+	run_test_trees,
 	run_test_sphincs
 };
 
@@ -124,6 +126,10 @@ int main(void)
 	{
 		(*tests[i])();
 	}
+
+	/* Summary */
+	puts("=============================");
+	printf("Total number of tests run: %d\n", tests_run);
 
 	/* Run integrity tests */
 	while (1)
