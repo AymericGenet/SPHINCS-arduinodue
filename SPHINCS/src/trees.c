@@ -38,6 +38,18 @@ static int stack_pop(struct Stack * stack, struct Node * node)
 	return 1; /* true */
 }
 
+/*
+ * Hashes the concatenation of the node from the top of stack (by popping it)
+ * with the node provided in parameter, and put the result in node.
+ */
+
+static void hash_stacknode_node(struct Node * node, struct Stack * stack)
+{
+	hash_nn_n(node->hash, stack->nodes[stack->index].hash, node->hash);
+	stack->index--; /* Short stack pop. */
+	node->level++;
+}
+
 unsigned int l_treehash(struct Node * node, struct Stack * stack,
                         unsigned long depth, unsigned int leaf,
                         int (*leafcalc)(struct Node * node, unsigned int))
@@ -48,9 +60,7 @@ unsigned int l_treehash(struct Node * node, struct Stack * stack,
 		if (stack->index >= 0 && (node->level) == stack->nodes[stack->index].level)
 		{
 			/* Merge them together. */
-			hash_nn_n(node->hash, stack->nodes[stack->index].hash, node->hash);
-			stack->index--; /* Short stack pop. */
-			node->level++;
+			hash_stacknode_node(node, stack);
 		}
 		/* Otherwise, push on the stack and pick a new leaf */
 		else
@@ -61,7 +71,7 @@ unsigned int l_treehash(struct Node * node, struct Stack * stack,
 			}
 			/*
 			 * Try to pick up a new leaf.
-			 * If failed, the L-tree case is handled.
+			 * If failed, merge the remaining nodes together.
 			 */
 			if (!leafcalc(node, leaf++))
 			{
@@ -71,8 +81,9 @@ unsigned int l_treehash(struct Node * node, struct Stack * stack,
 				}
 				if (stack->index >= 0)
 				{
+					/* Handle the case of an L-tree */
 					node->level = stack->nodes[stack->index].level;
-					depth++; /* Hack */
+					hash_stacknode_node(node, stack);
 				}
 			}
 		}
