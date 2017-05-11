@@ -13,7 +13,7 @@
 
 /*
  * Node structure which contains the hash of a node in a tree and its level
- * of altitutde in the tree.
+ * of altitude in the tree.
  */
 
 struct Node {
@@ -36,7 +36,7 @@ struct Stack {
 /*
  * Constructs an L-tree in a treehash fashion. The treehash algorithm merges
  * two nodes on a tree next to each other on the same level from left to right
- * (i.e. in ascending order) with the hash_nn_n() function in order to
+ * (i.e. in increasing order) with the hash_nn_n() function in order to
  * ultimately compute its root. If the tree is not balanced, as it is the case
  * with an L-tree, the level of the last leaves are automatically adjusted such
  * that the root is always correctly computed.
@@ -66,6 +66,20 @@ struct Stack {
 unsigned int l_treehash(struct Node * node, struct Stack * stack,
                         unsigned long depth, unsigned int leaf,
                         int (*leafcalc)(struct Node * node, unsigned int));
+
+/*
+ * Constructs an L-tree in a treehash fashion, as in l_treehash(), but merges
+ * two nodes on a tree next to each other on the same level from left to right
+ * (i.e. in increasing order) with the hash_nn_n_mask() function in order to
+ * ultimately compute its root.
+ *
+ * See l_treehash() documentation.
+ */
+
+unsigned int l_treehash_mask(struct Node * node, struct Stack * stack,
+                             unsigned long depth, unsigned int leaf,
+                             int (*leafcalc)(struct Node * node, unsigned int),
+                             unsigned char const * masks);
 
 
 #endif /* TREES_H_ */
