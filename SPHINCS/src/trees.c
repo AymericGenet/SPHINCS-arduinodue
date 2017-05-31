@@ -14,7 +14,7 @@
 
 static int stack_push(struct Stack * stack, struct Node * node)
 {
-	if (stack->index >= STACK_MAX_SIZE)
+	if (stack->index + 1 >= STACK_MAX_SIZE)
 	{
 		return 0; /* false */
 	}
@@ -46,8 +46,9 @@ static int stack_pop(struct Stack * stack, struct Node * node)
 static void hash_stacknode_node(struct Node * node, struct Stack * stack)
 {
 	hash_nn_n(node->hash, stack->nodes[stack->index].hash, node->hash);
-	stack->index--; /* Short stack pop. */
 	node->level++;
+	node->id = (stack->nodes[stack->index].id)/2;
+	stack->index--; /* Short stack pop. */
 }
 
 /*
@@ -59,8 +60,9 @@ static void hash_stacknode_node_mask(struct Node * node, struct Stack * stack,
                                      unsigned char const * mask)
 {
 	hash_nn_n_mask(node->hash, stack->nodes[stack->index].hash, node->hash, mask);
-	stack->index--; /* Short stack pop. */
 	node->level++;
+	node->id = (stack->nodes[stack->index].id)/2;
+	stack->index--; /* Short stack pop. */
 }
 
 unsigned int l_treehash(struct Node * node, struct Stack * stack,

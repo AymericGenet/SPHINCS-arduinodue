@@ -26,7 +26,8 @@
 #define SEED_BYTES 32 /* SPHINCS_BYTES */
 
 /* HORST parameters and quantities */
-#define HORST_T (1 << 16) /* 2^16 */
+#define HORST_TAU 16
+#define HORST_T 65536 /* (1 << HORST_TAU) */
 #define HORST_K 32
 #define HORST_SK_BYTES 32
 #define HORST_SIG_BYTES 13312 /* (64*SPHINCS_BYTES + (((log2(HORS_T) - 6)*SPHINCS_BYTES)
