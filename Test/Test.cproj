@@ -526,6 +526,18 @@
     <Compile Include="src\test_hash.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\test_horst.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\test_horst.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\test_prng.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\test_prng.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\test_SPHINCS.c">
       <SubType>compile</SubType>
     </Compile>

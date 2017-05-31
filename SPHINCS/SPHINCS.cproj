@@ -79,6 +79,12 @@
     <Compile Include="src\hash.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\horst.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\horst.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\parameters.h">
       <SubType>compile</SubType>
     </Compile>

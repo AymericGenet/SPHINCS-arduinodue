@@ -46,9 +46,11 @@
 
 #include "test_utils.h"
 #include "test_hash.h"
+#include "test_prng.h"
 #include "test_wotsp.h"
 #include "test_trees.h"
 #include "test_sphincs.h"
+#include "test_horst.h"
 
 #define STRING_EOL    "\r"
 #define STRING_HEADER "-- SPHINCS Test Project --\r\n" \
@@ -87,13 +89,15 @@ static void configure_console(void)
 }
 
 /* Test functions to execute */
-#define SUITES_AMOUNT 5
+#define SUITES_AMOUNT 7
 
 void (*tests[SUITES_AMOUNT])(void) = {
 	run_test_utils,
 	run_test_hash,
+	run_test_prng,
 	run_test_wotsp,
 	run_test_trees,
+	run_test_horst,
 	run_test_sphincs
 };
 
