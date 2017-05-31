@@ -27,6 +27,10 @@ extern unsigned char const in_sk2[SEED_BYTES];
 /* masks : 1024 bytes of random data */
 extern unsigned char const in_masks[MASKS_BYTES];
 
+/* stream : 128 bytes from ChaCha12 stream */
+#define PRNG_STREAM_LEN 128
+extern unsigned char const prng_stream[PRNG_STREAM_LEN];
+
 /*
  * Returns 1 (True) if the content from arr1 is the same as in arr2 up to len,
  * or 0 (False) otherwise.
