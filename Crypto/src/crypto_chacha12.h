@@ -13,7 +13,4 @@
 
 void chacha12_perm_c(u32 x[16], const u32 input[16]);
 
-int crypto_chacha12(unsigned char * out, unsigned long long const outlen,
-                    unsigned char const * nonce, unsigned char const * key);
-
 #endif /* CRYPTO_CHACHA12_H_ */

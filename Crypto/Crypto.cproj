@@ -148,9 +148,6 @@
     <Compile Include="src\chacha.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\crypto_chacha12.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="src\crypto_chacha12.h">
       <SubType>compile</SubType>
     </Compile>
