@@ -28,9 +28,17 @@ extern unsigned char const in_sk2[SEED_BYTES];
 extern unsigned char const in_masks[MASKS_BYTES];
 
 /*
- * Compares two arrays.
+ * Returns 1 (True) if the content from arr1 is the same as in arr2 up to len,
+ * or 0 (False) otherwise.
  */
 
 int array_cmp(unsigned char const * arr1, unsigned char const * arr2, int len);
+
+/*
+ * Returns 1 (True) if the content from arr is zero up to len, or 0 (False)
+ * otherwise.
+ */
+
+int array_is_zero(unsigned int const * arr, int len);
 
 #endif /* UTILS_H_ */

@@ -247,3 +247,17 @@ int array_cmp(unsigned char const * arr1, unsigned char const * arr2, int len)
 	}
 	return 1; /* True */
 }
+
+int array_is_zero(unsigned int const * arr, int len)
+{
+	int i;
+
+	for (i = 0; i < len; ++i)
+	{
+		if (arr[i] != 0)
+		{
+			return 0; /* False */
+		}
+	}
+	return 1; /* True */
+}
