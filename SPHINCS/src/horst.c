@@ -25,11 +25,10 @@ static int horst_leafcalc(struct Node * node, unsigned int leaf)
 {
 	if (leaf >= HORST_T)
 	{
-		printf("Failed?\n");
 		return 0; /* False */
 	}
 	else {
-		if ((leaf & 1) == 0)
+		if ((leaf & 1) == 0) /* cheap mod 2*/
 		{
 			/* Recover 2 secret values */
 			prng_next(&ctx, tmp);
@@ -47,19 +46,17 @@ static int horst_leafcalc(struct Node * node, unsigned int leaf)
 int horst_keygen(unsigned char const seed[SEED_BYTES],
                  unsigned char const masks[HORST_TAU*SPHINCS_BYTES])
 {
-	int i, j;
+	int i = 0;
 	struct Node node;
 	struct Stack stack;
 	stack.index = -1;
 
-	/* Sets up context */
 	prng_context_setup(&ctx, seed);
 
 	/* Constructs the Merkle tree root with treehash */
 	horst_leafcalc(&node, 0);
 	l_treehash_mask(&node, &stack, 2*(HORST_T - 1), 1, horst_leafcalc, masks);
 
-	/* Deletes the context */
 	prng_context_delete(&ctx);
 
 	/* Outputs on the stdout */

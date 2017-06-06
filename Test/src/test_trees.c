@@ -401,7 +401,7 @@ static char const * test_l_treehash_mask_balanced(void)
 		leaf = l_treehash_mask(&node, &stack, 1, leaf, leafcalc_balanced, in_masks);
 		printf("\n * i = %d, node: (id=%d, h=%d) \t", i, node.id, node.level);
 		mu_assert("Test case failed at above step.",
-		array_cmp(node.hash, layers + i*SPHINCS_BYTES, SPHINCS_BYTES));
+		          array_cmp(node.hash, layers + i*SPHINCS_BYTES, SPHINCS_BYTES));
 		printf("[OK]");
 	}
 	printf("\n");
@@ -486,7 +486,7 @@ static char const * test_l_treehash_mask_unbalanced(void)
 		leaf = l_treehash_mask(&node, &stack, 1, leaf, leafcalc_unbalanced, in_masks);
 		printf("\n * i = %d, node: (id=%d, h=%d) \t", i, node.id, node.level);
 		mu_assert("Test case failed at above step.",
-		array_cmp(node.hash, layers + i*SPHINCS_BYTES, SPHINCS_BYTES));
+		          array_cmp(node.hash, layers + i*SPHINCS_BYTES, SPHINCS_BYTES));
 		printf("[OK]");
 	}
 	printf("\n");
