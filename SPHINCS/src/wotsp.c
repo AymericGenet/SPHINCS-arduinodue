@@ -21,14 +21,14 @@
 	} \
 } while (0)
 
-int wotsp_keygen(unsigned char const sk1[SEED_BYTES],
+int wotsp_keygen(unsigned char const seed[SEED_BYTES],
                  unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
 {
 	int i, j;
 	unsigned char x[WOTS_L*SPHINCS_BYTES];
 
 	/* Recovers secret key with PRNG */
-	prng(x, WOTS_L*SPHINCS_BYTES, sk1);
+	prng(x, WOTS_L*SPHINCS_BYTES, seed);
 
 	/* Chains hash functions WOTS_L times */
 	for (i = 0; i < WOTS_L; ++i)
@@ -46,7 +46,7 @@ int wotsp_keygen(unsigned char const sk1[SEED_BYTES],
 }
 
 int wotsp_sign(unsigned char const digest[SPHINCS_BYTES],
-               unsigned char const sk1[SEED_BYTES],
+               unsigned char const seed[SEED_BYTES],
                unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
 {
 	int i, j;
@@ -54,7 +54,7 @@ int wotsp_sign(unsigned char const digest[SPHINCS_BYTES],
 	unsigned char x[WOTS_L*SPHINCS_BYTES];
 
 	/* Recovers secret key with PRNG */
-	prng(x, WOTS_L*SPHINCS_BYTES, sk1);
+	prng(x, WOTS_L*SPHINCS_BYTES, seed);
 
 	for (i = 0, checksum = 0; i < WOTS_L; ++i)
 	{

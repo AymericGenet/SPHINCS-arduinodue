@@ -36,10 +36,10 @@
  * The id is used to recognize nodes during the treehash algorithm, so the
  * authentication path can be deduced.
  *
- * The default values for the hash is the Merkle L-tree root of the WOTS+
- * verification key, the level starts with 0, up to the height of the Merkle
- * tree (which, then, corresponds to the root), and the starting id begins with
- * the leaf id.
+ * The default values for the hash is either the root of the Merkle L-tree
+ * constructed from a WOTS+ verification key, or the root of a HORST Merkle
+ * tree. The level starts with 0, up to the height of the Merkle tree (which,
+ * then, corresponds to the root), and the starting id begins with the leaf id.
  */
 
 struct Node {

@@ -111,7 +111,7 @@ int horst_keygen(unsigned char const seed[SEED_BYTES],
 
 int horst_sign(unsigned char const digest[SPHINCS_DIGEST_BYTES],
                unsigned char const seed[SEED_BYTES],
-               unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
+               unsigned char const masks[HORST_TAU*SPHINCS_BYTES])
 {
 	unsigned int i = 0, j = 0, k = 0, leaf = 0;
 	ECRYPT_ctx ctx_secret;
@@ -188,7 +188,7 @@ int horst_sign(unsigned char const digest[SPHINCS_DIGEST_BYTES],
 
 int horst_sign_opti(unsigned char const digest[SPHINCS_DIGEST_BYTES],
                     unsigned char const seed[SEED_BYTES],
-                    unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
+                    unsigned char const masks[HORST_TAU*SPHINCS_BYTES])
 {
 	unsigned int i = 0, j = 0, leaf = 0;
 	struct Node node;
@@ -266,9 +266,9 @@ int horst_sign_opti(unsigned char const digest[SPHINCS_DIGEST_BYTES],
 }
 
 int horst_verify(unsigned char const digest[SPHINCS_BYTES],
-                 unsigned char const pk[WOTS_L*SPHINCS_BYTES],
-                 unsigned char const sig[WOTS_L*SPHINCS_BYTES],
-                 unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
+                 unsigned char const y[SPHINCS_BYTES],
+                 unsigned char const sig[HORST_SIG_BYTES*SPHINCS_BYTES],
+                 unsigned char const masks[HORST_TAU*SPHINCS_BYTES])
 {
 	
 }

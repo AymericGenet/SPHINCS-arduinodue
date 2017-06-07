@@ -9,24 +9,33 @@
 #define HORST_H_
 
 /*
- * Prints public key Y associated with secret key X which is generated using
- * seed sk1 with masks for a WOTS+ instance.
+ * Prints HORST public key on stdout associated with the provided seed and
+ * masks.
+ *
+ * The key generation uses the treehash algorithm to compute the root of the
+ * HORST tree.
  */
 
 int horst_keygen(unsigned char const seed[SEED_BYTES],
-                 unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES]);
+                 unsigned char const masks[HORST_TAU*SPHINCS_BYTES]);
 
 /*
- * Signs a message according to WOTS+ scheme with respect to secret key sk1 and
- * masks.
+ * Prints textbook HORST signature of a digest on stdout with respect to
+ * provided seed and masks.
+ *
+ * The HORST signature consists of revealing secret values along with their own
+ * authentication path, so a verifier can reconstruct the HORST tree.
+ *
+ * Because of memory limitations, the procedure makes as many treehashes as
+ * required to compute authentication path of all secret values.
  */
 
-int horst_sign(unsigned char const digest[SPHINCS_BYTES],
+int horst_sign(unsigned char const digest[SPHINCS_DIGEST_BYTES],
                unsigned char const seed[SEED_BYTES],
-               unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES]);
+               unsigned char const masks[HORST_TAU*SPHINCS_BYTES]);
 
 /*
- * Prints optimized HORST signature of a message on stdout with respect to
+ * Prints optimized HORST signature of a digest on stdout with respect to
  * provided seed and masks, as it is done in the SPHINCS cryptosystem.
  *
  * In this variant, the signature is made out of order. The sixth layer is
@@ -37,18 +46,18 @@ int horst_sign(unsigned char const digest[SPHINCS_BYTES],
  * nodes which belong to the signature are printed out.
  */
 
-int horst_sign_opti(unsigned char const digest[SPHINCS_BYTES],
+int horst_sign_opti(unsigned char const digest[SPHINCS_DIGEST_BYTES],
                     unsigned char const seed[SEED_BYTES],
-                    unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES]);
+                    unsigned char const masks[HORST_TAU*SPHINCS_BYTES]);
 
 /*
- * Verifies the validity of a signature for a message according to WOTS+ scheme
- * under the public key pk and masks.
+ * Verifies the validity of a HORST signature for a digest under the provided
+ * public key and masks.
  */
 
 int horst_verify(unsigned char const digest[SPHINCS_BYTES],
-                 unsigned char const pk[WOTS_L*SPHINCS_BYTES],
-                 unsigned char const sig[WOTS_L*SPHINCS_BYTES],
-                 unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES]);
+                 unsigned char const y[SPHINCS_BYTES],
+                 unsigned char const sig[HORST_SIG_BYTES*SPHINCS_BYTES],
+                 unsigned char const masks[HORST_TAU*SPHINCS_BYTES]);
 
 #endif /* HORST_H_ */
