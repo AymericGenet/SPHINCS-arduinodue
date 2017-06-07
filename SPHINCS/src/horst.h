@@ -26,6 +26,22 @@ int horst_sign(unsigned char const digest[SPHINCS_BYTES],
                unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES]);
 
 /*
+ * Prints optimized HORST signature of a message on stdout with respect to
+ * provided seed and masks, as it is done in the SPHINCS cryptosystem.
+ *
+ * In this variant, the signature is made out of order. The sixth layer is
+ * always printed out, so the authentication paths can be truncated after the
+ * tenth node.
+ *
+ * The procedure only makes one treehash call, during which all the encountered
+ * nodes which belong to the signature are printed out.
+ */
+
+int horst_sign_opti(unsigned char const digest[SPHINCS_BYTES],
+                    unsigned char const seed[SEED_BYTES],
+                    unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES]);
+
+/*
  * Verifies the validity of a signature for a message according to WOTS+ scheme
  * under the public key pk and masks.
  */

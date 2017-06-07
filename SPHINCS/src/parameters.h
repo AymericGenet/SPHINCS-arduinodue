@@ -30,8 +30,11 @@
 #define HORST_T 65536 /* (1 << HORST_TAU) */
 #define HORST_K 32
 #define HORST_SK_BYTES 32
-#define HORST_SIG_BYTES 13312 /* (64*SPHINCS_BYTES + (((log2(HORS_T) - 6)*SPHINCS_BYTES)
-                                  + HORST_SK_BYTES)*HORST_K) */
+#define HORST_MAX_LEVEL 10
+#define HORST_TRUNC_TREEHASH_ROUNDS 130944 /* ((1 << HORST_MAX_LEVEL) - 1)
+                                               * (1 << (HORST_TAU - HORST_MAX_LEVEL + 1)) */
+#define HORST_SIG_BYTES 13312 /* ((1 << (HORST_TAU - HORST_MAX_LEVEL))*SPHINCS_BYTES
+                                  + HORST_K*(HORST_MAX_LEVEL*SPHINCS_BYTES + HORST_SK_BYTES)) */
 
 /* WOTS parameters and quantities */
 #define WOTS_W 4

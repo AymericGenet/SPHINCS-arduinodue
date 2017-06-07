@@ -43,11 +43,12 @@ static int horst_leafcalc(struct Node * node, unsigned int leaf)
 	}
 }
 
-static void compute_auth_path_id(unsigned int auth_path_id[HORST_TAU], unsigned int block)
+static void compute_auth_path_id(unsigned int * auth_path_id,
+                                 unsigned int const length, unsigned int block)
 {
 	int i = 0;
 
-	for (i = 0; i < HORST_TAU; ++i)
+	for (i = 0; i < length; ++i)
 	{
 		if ((block & 1) == 0)
 		{
@@ -64,6 +65,21 @@ static void compute_auth_path_id(unsigned int auth_path_id[HORST_TAU], unsigned 
 static int uint_cmp(const void * a, const void * b)
 {
 	return (*(unsigned int *)a) < (*(unsigned int *)b) ? -1 : 1 /* true */;
+}
+
+static int is_in_auth_path(struct Node const node, unsigned int const * auth_path_id)
+{
+	int i = 0;
+
+	for (i = 0; i < HORST_K; ++i)
+	{
+		if (auth_path_id[i*node.level] == node.id)
+		{
+			return 1; /* true */
+		}
+	}
+
+	return 0; /* false */
 }
 
 
@@ -120,12 +136,12 @@ int horst_sign(unsigned char const digest[SPHINCS_DIGEST_BYTES],
 	for (i = 0; i < HORST_K; ++i)
 	{
 		/* Prepares the treehash */
-		compute_auth_path_id(auth_path_id, blocks[i]);
+		compute_auth_path_id(auth_path_id, HORST_TAU, blocks[i]);
 		leaf = 0;
 		prng_context_setup(&ctx, seed);
 		horst_leafcalc(&node, leaf++);
 
-		/* Computes the authentication path */
+		/* Computes the authentication path associated with block id */
 		for (j = 0; j < 2*(HORST_T - 1); ++j)
 		{
 			leaf = l_treehash_mask(&node, &stack, 1, leaf, horst_leafcalc, masks);
@@ -140,7 +156,7 @@ int horst_sign(unsigned char const digest[SPHINCS_DIGEST_BYTES],
 
 		/* Offset in-place:
 		 *   if i == 0: draw data until you get to the correct secret value
-		 *   else: draw the difference of data to get to the correct secret value */
+		 *   else: draw the difference of data to get to the next secret value */
 		for (j = 0; j < (i == 0 ? blocks[i]/2 + 1 : blocks[i]/2 - blocks[i-1]/2); ++j)
 		{
 			prng_next(&ctx_secret, tmp);
@@ -166,6 +182,85 @@ int horst_sign(unsigned char const digest[SPHINCS_DIGEST_BYTES],
 
 		prng_context_delete(&ctx);
 	}
+
+	return 0;
+}
+
+int horst_sign_opti(unsigned char const digest[SPHINCS_DIGEST_BYTES],
+                    unsigned char const seed[SEED_BYTES],
+                    unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
+{
+	unsigned int i = 0, j = 0, leaf = 0;
+	struct Node node;
+	struct Stack stack;
+	stack.index = -1;
+	unsigned int auth_path_id[HORST_MAX_LEVEL*HORST_K];
+	unsigned int blocks[HORST_K];
+
+	/* Splits the message digest in HORST_K blocks of HORST_TAU bits */
+	for (i = 0; i < HORST_K; ++i)
+	{
+		SPLIT_16(i, blocks[i], digest);
+	}
+
+	/* Sorts the blocks in ascending order */
+	qsort(blocks, HORST_K, sizeof(unsigned int), uint_cmp);
+
+	/* Outputs the secret values that correspond to the blocks in one PRNG traversal*/
+	prng_context_setup(&ctx, seed);
+	for (i = 0; i < HORST_K; ++i)
+	{
+		/* Offset in-place:
+		*   if i == 0: draw data until you get to the correct secret value
+		*   else: draw the difference of data to get to the next secret value */
+		for (j = 0; j < (i == 0 ? blocks[i]/2 + 1 : blocks[i]/2 - blocks[i-1]/2); ++j)
+		{
+			prng_next(&ctx, tmp);
+		}
+
+		/* Outputs secret value on the stdout */
+		printf("(sk=%i) ", blocks[i]);
+		for (j = 0; j < SPHINCS_BYTES; ++j)
+		{
+			printf("%02x", tmp[j + (blocks[i] & 1)*SPHINCS_BYTES]);
+			/* Erases it asap */
+			tmp[j] = 0;
+			tmp[j + SPHINCS_BYTES] = 0;
+		}
+		printf("\n");
+
+		/* Computes authentication path associated with block id */
+		compute_auth_path_id(auth_path_id + i*HORST_MAX_LEVEL, HORST_MAX_LEVEL, blocks[i]);
+	}
+
+	/* Prepares the treehash */
+	prng_context_setup(&ctx, seed);
+	horst_leafcalc(&node, leaf++);
+
+	/* Computes the authentication path in one treehash */
+	for (i = 0; i < HORST_TRUNC_TREEHASH_ROUNDS; ++i)
+	{
+		leaf = l_treehash_mask(&node, &stack, 1, leaf, horst_leafcalc, masks);
+
+		/* Outputs node with position if node needs to be printed */
+		if (node.level == HORST_MAX_LEVEL || is_in_auth_path(node, auth_path_id))
+		{
+			printf("(h=%d, id=%d) ", node.level, node.id);
+			for (j = 0; j < SPHINCS_BYTES; ++j)
+			{
+				printf("%02x", node.hash[j]);
+			}
+			printf("\n");
+
+			/* FIXME: skip node in treehash (hack) */
+			if (node.level == HORST_MAX_LEVEL && !horst_leafcalc(&node, leaf++))
+			{
+				break;
+			}
+		}
+	}
+
+	prng_context_delete(&ctx);
 
 	return 0;
 }

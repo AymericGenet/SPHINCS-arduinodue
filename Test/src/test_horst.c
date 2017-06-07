@@ -28,6 +28,15 @@ static char const * test_horst_sign(void)
 	return NULL;
 }
 
+static char const * test_horst_sign_opti(void)
+{
+	/* sign with in_sk1, in_masks, and in1_hashed_512 */
+	printf("(this may take a few seconds)\n");
+	horst_sign_opti(in1_hashed_512, in_sk1, in_masks);
+
+	return NULL;
+}
+
 
 void run_test_horst(void)
 {
@@ -35,6 +44,7 @@ void run_test_horst(void)
 
 	mu_run_test(test_horst_keygen, "test_horst_keygen()");
 	mu_run_test(test_horst_sign, "test_horst_sign()");
+	mu_run_test(test_horst_sign_opti, "test_horst_sign_opti()");
 
 	printf("\n");
 }
