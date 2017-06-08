@@ -19,7 +19,7 @@
 } while (0)
 
 static ECRYPT_ctx ctx;
-static unsigned char tmp[2*SPHINCS_BYTES];
+static unsigned char tmp[PRNG_BYTES];
 
 static int horst_leafcalc(struct Node * node, unsigned int leaf)
 {

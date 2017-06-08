@@ -25,9 +25,9 @@ void prng_context_setup(ECRYPT_ctx * ctx, unsigned char const seed[SEED_BYTES])
 	ECRYPT_ivsetup(ctx, nonce);
 }
 
-void prng_next(ECRYPT_ctx * ctx, unsigned char out[2*SPHINCS_BYTES])
+void prng_next(ECRYPT_ctx * ctx, unsigned char out[PRNG_BYTES])
 {
-	ECRYPT_keystream_bytes(ctx, out, 2*SPHINCS_BYTES);
+	ECRYPT_keystream_bytes(ctx, out, PRNG_BYTES);
 }
 
 void prng_context_delete(ECRYPT_ctx * ctx)

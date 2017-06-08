@@ -24,6 +24,7 @@
 
 /* PRNG parameters */
 #define SEED_BYTES 32 /* SPHINCS_BYTES */
+#define PRNG_BYTES 64
 
 /* HORST parameters and quantities */
 #define HORST_TAU 16

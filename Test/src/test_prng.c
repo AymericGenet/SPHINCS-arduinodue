@@ -34,21 +34,21 @@ static char const * test_prng(void)
 	return ""; /* Success */
 }
 
-static char const * test_prng_call(void)
+static char const * test_prng_next(void)
 {
 	ECRYPT_ctx ctx;
-	unsigned char out[64];
+	unsigned char out[PRNG_BYTES];
 
 	/* Setup */
 	prng_context_setup(&ctx, in_sk1);
 
 	/* Call 64 first bytes */
 	prng_next(&ctx, out);
-	mu_assert("Test case failed for first PRNG call.", array_cmp(out, prng_stream, 64));
+	mu_assert("Test case failed for first PRNG call.", array_cmp(out, prng_stream, PRNG_BYTES));
 
 	/* Call 64 next bytes */
 	prng_next(&ctx, out);
-	mu_assert("Test case failed for next PRNG call.", array_cmp(out, prng_stream + 64, 64));
+	mu_assert("Test case failed for next PRNG call.", array_cmp(out, prng_stream + PRNG_BYTES, PRNG_BYTES));
 
 	/* Delete */
 	prng_context_delete(&ctx);
@@ -63,7 +63,7 @@ void run_test_prng(void)
 	printf("### TEST_PRNG ###\n\n");
 
 	mu_run_test(test_prng, "test_prng()");
-	mu_run_test(test_prng_call, "test_prng_call()");
+	mu_run_test(test_prng_next, "test_prng_next()");
 
 	printf("\n");
 }

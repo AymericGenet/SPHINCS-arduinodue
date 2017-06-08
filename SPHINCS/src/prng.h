@@ -23,10 +23,10 @@ void prng(unsigned char * out, unsigned long long const outlen, unsigned char co
 void prng_context_setup(ECRYPT_ctx * ctx, unsigned char const seed[SEED_BYTES]);
 
 /*
- * Generates the next pseudorandom number from context.
+ * Generates the next PRNG_BYTES bytes of pseudorandom number from context.
  */
 
-void prng_next(ECRYPT_ctx * ctx, unsigned char out[2*SPHINCS_BYTES]);
+void prng_next(ECRYPT_ctx * ctx, unsigned char out[PRNG_BYTES]);
 
 /*
  * Deletes pseudorandom number generator context.
