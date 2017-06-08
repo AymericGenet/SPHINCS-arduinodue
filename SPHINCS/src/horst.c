@@ -73,7 +73,7 @@ static int is_in_auth_path(struct Node const node, unsigned int const * auth_pat
 
 	for (i = 0; i < HORST_K; ++i)
 	{
-		if (auth_path_id[i*node.level] == node.id)
+		if (auth_path_id[node.level + i*HORST_MAX_LEVEL] == node.id)
 		{
 			return 1; /* true */
 		}
