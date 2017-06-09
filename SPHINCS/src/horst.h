@@ -53,11 +53,22 @@ int horst_sign_opti(unsigned char const digest[SPHINCS_DIGEST_BYTES],
 /*
  * Verifies the validity of a HORST signature for a digest under the provided
  * public key and masks.
+ *
+ * The signature is assumed to be available in the sig_stream function. It is
+ * also assumed that the nodes come in the same order as the horst_sign_opti,
+ * which corresponds to a treehash order.
+ *
+ * The procedure runs a re-arranged variant of the treehash algorithm to
+ * compute the top layer (HORST_MAX_LEVEL). This variant reads nodes from the
+ * signature stream, checks that secret value ids correspond to message digest,
+ * stores top layer nodes to compare them to the received top layer nodes and
+ * to eventually construct the tree root, so it can be compared to the public
+ * key.
  */
 
-int horst_verify(unsigned char const digest[SPHINCS_BYTES],
-                 unsigned char const y[SPHINCS_BYTES],
-                 unsigned char const sig[HORST_SIG_BYTES*SPHINCS_BYTES],
-                 unsigned char const masks[HORST_TAU*SPHINCS_BYTES]);
+int horst_verify_opti(unsigned char const digest[SPHINCS_DIGEST_BYTES],
+                      unsigned char const y[SPHINCS_BYTES],
+                      int (*sig_stream)(void),
+                      unsigned char const masks[HORST_TAU*SPHINCS_BYTES]);
 
 #endif /* HORST_H_ */

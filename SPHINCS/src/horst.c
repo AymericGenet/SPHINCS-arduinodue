@@ -221,10 +221,144 @@ int horst_sign_opti(unsigned char const digest[SPHINCS_DIGEST_BYTES],
 	return 0;
 }
 
-int horst_verify(unsigned char const digest[SPHINCS_BYTES],
-                 unsigned char const y[SPHINCS_BYTES],
-                 unsigned char const sig[HORST_SIG_BYTES*SPHINCS_BYTES],
-                 unsigned char const masks[HORST_TAU*SPHINCS_BYTES])
+int horst_verify_opti(unsigned char const digest[SPHINCS_DIGEST_BYTES],
+                      unsigned char const y[SPHINCS_BYTES],
+                      int (*sig_stream)(void),
+                      unsigned char const masks[HORST_TAU*SPHINCS_BYTES])
 {
-	
+	unsigned char sk_hash[SPHINCS_BYTES*HORST_K];
+	unsigned char top_layer[SPHINCS_BYTES*(1 << (HORST_TAU - HORST_MAX_LEVEL))];
+	unsigned int blocks[HORST_K];
+	int i = 0, j = 0, sk_idx = 0, top_layer_idx = 0;
+	struct Node node;
+	struct Stack stack;
+	stack.index = -1;
+
+	/* Splits the message digest in HORST_K blocks of HORST_TAU bits */
+	for (i = 0; i < HORST_K; ++i)
+	{
+		SPLIT_16(i, blocks[i], digest);
+	}
+
+	/* Sorts the blocks in ascending order */
+	qsort(blocks, HORST_K, sizeof(unsigned int), uint_cmp);
+
+	/* Parse first value */
+	for (i = 0; i < HORST_K; ++i)
+	{
+		if (!parse_sk(sk_hash + i*SPHINCS_BYTES, sig_stream))
+		{
+			return 0; /* FIXME: goto fail */
+		}
+		hash_n_n(sk_hash + i*SPHINCS_BYTES, sk_hash + i*SPHINCS_BYTES);
+	}
+
+	/*
+	 * Re-arranged treehash which reads authentication path from sig_stream()
+	 */
+	while (parse_node(&node, sig_stream))
+	{
+		/* If node is a leaf, merges it with the next sk_hash */
+		if (node.level == 0)
+		{
+			if (sk_idx >= HORST_K)
+			{
+				return 0; /* FIXME: goto fail */
+			}
+
+			if ((node.id & 1) == 0)
+			{
+				if (blocks[sk_idx] != node.id + 1)
+				{
+					return 0; /* False */
+				}
+				hash_nn_n_mask(node.hash, node.hash, sk_hash + sk_idx*SPHINCS_BYTES, masks);
+			}
+			else
+			{
+				if (blocks[sk_idx] != node.id - 1)
+				{
+					return 0; /* False */
+				}
+				hash_nn_n_mask(node.hash, sk_hash + sk_idx*SPHINCS_BYTES, node.hash, masks);
+			}
+
+			node.level = 1;
+			node.id /= 2;
+			sk_idx++;
+		}
+		/* If node is top node and was already computed, compare them */
+		else if (node.level == HORST_MAX_LEVEL && node.id < top_layer_idx)
+		{
+			for (i = 0; i < SPHINCS_BYTES; ++i)
+			{
+				if (node.hash[i] != top_layer[i + SPHINCS_BYTES*node.id])
+				{
+					return 0; /* False */
+				}
+			}
+		}
+
+		/* While two nodes can be merged, merge them */
+		while (stack.index >= 0 && node.level != HORST_MAX_LEVEL
+		       && stack.nodes[stack.index].level == node.level
+		       && stack.nodes[stack.index].id != node.id)
+		{
+			if ((node.id & 1) == 0)
+			{
+				hash_nn_n_mask(node.hash, node.hash, stack.nodes[stack.index].hash,
+				               masks + 2*(node.level)*SPHINCS_BYTES);
+			}
+			else
+			{
+				hash_nn_n_mask(node.hash, stack.nodes[stack.index].hash, node.hash,
+				               masks + 2*(node.level)*SPHINCS_BYTES);
+			}
+			node.level++;
+			node.id = (stack.nodes[stack.index].id)/2;
+			stack.index--; /* Short stack pop */
+		}
+
+		/* If node top level, store it for root computation */
+		if (node.level == HORST_MAX_LEVEL)
+		{
+			/* If not already stored */
+			if ((node.id + 1) > top_layer_idx)
+			{
+				for (i = 0; i < SPHINCS_BYTES; ++i)
+				{
+					top_layer[i + node.id*SPHINCS_BYTES] = node.hash[i];
+				}
+				top_layer_idx = node.id + 1;
+			}
+		}
+		/* If node is not top node and not a duplicate, push it on the stack */
+		else if (stack.nodes[stack.index].level != node.level || stack.nodes[stack.index].id != node.id)
+		{
+			stack.index++;
+			stack.nodes[stack.index] = node;
+		}
+	}
+
+	/* Computes tree root from top layer */
+	for (i = 0; i < HORST_TAU - HORST_MAX_LEVEL; ++i)
+	{
+		for (j = 0; j < (1 << (HORST_TAU - HORST_MAX_LEVEL - i)); ++j)
+		{
+			hash_nn_n_mask(top_layer + j*SPHINCS_BYTES,
+			               top_layer + (2*j)*SPHINCS_BYTES, top_layer + (2*j+1)*SPHINCS_BYTES,
+			               masks + 2*(HORST_MAX_LEVEL + i)*SPHINCS_BYTES);
+		}
+	}
+
+	/* Compare tree root with public key */
+	for (i = 0; i < SPHINCS_BYTES; ++i)
+	{
+		if (top_layer[i] != y[i])
+		{
+			return 0; /* False */
+		}
+	}
+
+	return 1; /* True */
 }
