@@ -24,7 +24,7 @@
 	for (i = 1; i < height; ++i) { \
 		for (j = 0; j < (1 << (height - i)); ++j) { \
 			hash_nn_n_mask(leaves + j*SPHINCS_BYTES, leaves + 2*j*SPHINCS_BYTES, \
-			               leaves + 2*(j+1)*SPHINCS_BYTES, masks + i*SPHINCS_BYTES); \
+			               leaves + 2*(j+1)*SPHINCS_BYTES, masks + 2*i*SPHINCS_BYTES); \
 		} \
 	} \
 } while(0)
@@ -109,5 +109,19 @@ unsigned int l_treehash_mask(struct Node * node, struct Stack * stack,
                              int (*leafcalc)(struct Node * node, unsigned int),
                              unsigned char const * masks);
 
+
+/*
+ * Computes the id of the authentication path.
+ */
+
+void compute_auth_path_id(unsigned int * auth_path_id,
+                          unsigned int const length, unsigned int block);
+
+
+/*
+ * Checks if node is in authentication path.
+ */
+
+int is_in_auth_path(struct Node const node, unsigned int const * auth_path_id);
 
 #endif /* TREES_H_ */

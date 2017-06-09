@@ -12,11 +12,7 @@
 #include "prng.h"
 #include "hash.h"
 #include "ecrypt-sync.h"
-
-#define SPLIT_16(i, m, digest) do { \
-	m = digest[2*i]; /* unsure about long promotion */ \
-	m = (m << 8) + digest[2*i + 1]; \
-} while (0)
+#include "misc.h"
 
 static ECRYPT_ctx ctx;
 static unsigned char tmp[PRNG_BYTES];
@@ -42,46 +38,6 @@ static int horst_leafcalc(struct Node * node, unsigned int leaf)
 		return 1; /* True */
 	}
 }
-
-static void compute_auth_path_id(unsigned int * auth_path_id,
-                                 unsigned int const length, unsigned int block)
-{
-	int i = 0;
-
-	for (i = 0; i < length; ++i)
-	{
-		if ((block & 1) == 0)
-		{
-			auth_path_id[i] = block + 1;
-		}
-		else
-		{
-			auth_path_id[i] = block - 1;
-		}
-		block /= 2;
-	}
-}
-
-static int uint_cmp(const void * a, const void * b)
-{
-	return (*(unsigned int *)a) < (*(unsigned int *)b) ? -1 : 1 /* true */;
-}
-
-static int is_in_auth_path(struct Node const node, unsigned int const * auth_path_id)
-{
-	int i = 0;
-
-	for (i = 0; i < HORST_K; ++i)
-	{
-		if (auth_path_id[node.level + i*HORST_MAX_LEVEL] == node.id)
-		{
-			return 1; /* true */
-		}
-	}
-
-	return 0; /* false */
-}
-
 
 
 int horst_keygen(unsigned char const seed[SEED_BYTES],

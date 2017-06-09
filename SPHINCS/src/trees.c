@@ -151,3 +151,37 @@ unsigned int l_treehash_mask(struct Node * node, struct Stack * stack,
 	}
 	return leaf;
 }
+
+void compute_auth_path_id(unsigned int * auth_path_id,
+                          unsigned int const length, unsigned int block)
+{
+	int i = 0;
+
+	for (i = 0; i < length; ++i)
+	{
+		if ((block & 1) == 0)
+		{
+			auth_path_id[i] = block + 1;
+		}
+		else
+		{
+			auth_path_id[i] = block - 1;
+		}
+		block /= 2;
+	}
+}
+
+int is_in_auth_path(struct Node const node, unsigned int const * auth_path_id)
+{
+	int i = 0;
+
+	for (i = 0; i < HORST_K; ++i)
+	{
+		if (auth_path_id[node.level + i*HORST_MAX_LEVEL] == node.id)
+		{
+			return 1; /* True */
+		}
+	}
+
+	return 0; /* False */
+}
