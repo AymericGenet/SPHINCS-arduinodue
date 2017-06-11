@@ -18,8 +18,12 @@ int uint_cmp(const void * a, const void * b)
 int parse_sk(unsigned char * sk_hash, int (*sig_stream)())
 {
 	int ch = 0, i = 0;
-	unsigned char string[2*SPHINCS_BYTES];
-	unsigned char hex[2];
+	char string[2*SPHINCS_BYTES + 1] = "";
+	char hex[2 + 1] = "";
+
+	hex[2] = '\0';
+	string[2*SPHINCS_BYTES] = '\0';
+
 	unsigned long tmp = 0;
 
 	/* Skip the parentheses */
@@ -69,10 +73,11 @@ int parse_sk(unsigned char * sk_hash, int (*sig_stream)())
 int parse_node(struct Node * node, int (*sig_stream)())
 {
 	int ch = 0, i = 0;
-	unsigned char string[2*SPHINCS_BYTES + 1];
-	unsigned char hex[2];
+	char string[2*SPHINCS_BYTES + 1] = "";
+	char hex[2 + 1] = "";
 	unsigned long tmp = 0;
 
+	hex[2] = '\0';
 	string[2*SPHINCS_BYTES] = '\0';
 
 	/* Skip until height is reached */
