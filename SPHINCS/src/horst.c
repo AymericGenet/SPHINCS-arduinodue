@@ -162,7 +162,7 @@ int horst_sign_opti(unsigned char const digest[SPHINCS_DIGEST_BYTES],
 	/* Sorts the blocks in ascending order */
 	qsort(blocks, HORST_K, sizeof(unsigned int), uint_cmp);
 
-	/* Outputs the secret values that correspond to the blocks in one PRNG traversal*/
+	/* Outputs the secret values that correspond to the blocks in one PRNG traversal */
 	prng_context_setup(&ctx, seed);
 	for (i = 0; i < HORST_K; ++i)
 	{
@@ -227,9 +227,10 @@ int horst_verify_opti(unsigned char const digest[SPHINCS_DIGEST_BYTES],
                       unsigned char const masks[HORST_TAU*SPHINCS_BYTES])
 {
 	unsigned char sk_hash[SPHINCS_BYTES*HORST_K];
-	unsigned char top_layer[SPHINCS_BYTES*(1 << (HORST_TAU - HORST_MAX_LEVEL))];
+	unsigned char top_layer[SPHINCS_BYTES*HORST_MAX_LEVEL_NODES];
 	unsigned int blocks[HORST_K];
-	int i = 0, j = 0, sk_idx = 0, top_layer_idx = 0;
+	unsigned int top_layer_idx = 0; /* NOTE: This counter is shifted by 1. */
+	int i = 0, j = 0, sk_idx = 0;
 	struct Node node;
 	struct Stack stack;
 	stack.index = -1;
@@ -256,7 +257,7 @@ int horst_verify_opti(unsigned char const digest[SPHINCS_DIGEST_BYTES],
 	/*
 	 * Re-arranged treehash which reads authentication path from sig_stream()
 	 */
-	while (parse_node(&node, sig_stream))
+	while (top_layer_idx < HORST_MAX_LEVEL_NODES + 1 && parse_node(&node, sig_stream))
 	{
 		/* If node is a leaf, merges it with the next sk_hash */
 		if (node.level == 0)
@@ -341,15 +342,7 @@ int horst_verify_opti(unsigned char const digest[SPHINCS_DIGEST_BYTES],
 	}
 
 	/* Computes tree root from top layer */
-	for (i = 0; i < HORST_TAU - HORST_MAX_LEVEL; ++i)
-	{
-		for (j = 0; j < (1 << (HORST_TAU - HORST_MAX_LEVEL - i)); ++j)
-		{
-			hash_nn_n_mask(top_layer + j*SPHINCS_BYTES,
-			               top_layer + (2*j)*SPHINCS_BYTES, top_layer + (2*j+1)*SPHINCS_BYTES,
-			               masks + 2*(HORST_MAX_LEVEL + i)*SPHINCS_BYTES);
-		}
-	}
+	TREE_CONSTRUCTION_MASK(i, j, HORST_MAX_LEVEL, HORST_TAU, top_layer, masks);
 
 	/* Compare tree root with public key */
 	for (i = 0; i < SPHINCS_BYTES; ++i)
