@@ -10,11 +10,15 @@
 #include "test_trees.h"
 #include "trees.h"
 #include "utils.h"
+#include "hash.h"
 
-#define LEAVES_TOTAL 8
-#define LEAVES_CUT 5
+#define TEST_TREES_TOTAL_LEAVES 8
+#define TEST_TREES_CUT_LEAVES 5
+#define TEST_TREES_HEIGHT 3
+#define TEST_TREES_TOTAL_LAYERS_NODES (2*TEST_TREES_TOTAL_LEAVES - 1)
+#define TEST_TREES_CUT_LAYERS_NODES (2*TEST_TREES_CUT_LEAVES - 1)
 
-static char const leaves[LEAVES_TOTAL*SPHINCS_BYTES] =
+static unsigned char const leaves[TEST_TREES_TOTAL_LEAVES*SPHINCS_BYTES] =
 {
 	/* leaf 0 */
 	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
@@ -67,30 +71,130 @@ static char const leaves[LEAVES_TOTAL*SPHINCS_BYTES] =
 
 static int leafcalc_balanced(struct Node * node, unsigned int leaf)
 {
-	if (leaf >= LEAVES_TOTAL)
+	if (leaf >= TEST_TREES_TOTAL_LEAVES)
 	{
-		return 0; /* false */
+		return 0; /* False */
 	}
 	else {
 		memcpy(node->hash, leaves + leaf*SPHINCS_BYTES, SPHINCS_BYTES);
 		node->level = 0;
 		node->id = leaf;
-		return 1; /* true */
+		return 1; /* True */
 	}
 }
 
 static int leafcalc_unbalanced(struct Node * node, unsigned int leaf)
 {
-	if (leaf >= LEAVES_CUT)
+	if (leaf >= TEST_TREES_CUT_LEAVES)
 	{
-		return 0; /* false */
+		return 0; /* False */
 	}
 	else {
 		memcpy(node->hash, leaves + leaf*SPHINCS_BYTES, SPHINCS_BYTES);
 		node->level = 0;
 		node->id = leaf;
-		return 1; /* true */
+		return 1; /* True */
 	}
+}
+
+static char const * test_tree_construction_balanced(void)
+{
+	unsigned char const exp_root[SPHINCS_BYTES] =
+	{
+		0x27, 0xb7, 0x10, 0x5d, 0x75, 0x88, 0x01, 0x86,
+		0x59, 0x80, 0x03, 0x9c, 0x99, 0x68, 0x3e, 0x83,
+		0x06, 0x77, 0x6d, 0x1e, 0x29, 0x85, 0x96, 0xb6,
+		0x58, 0x07, 0xa0, 0x82, 0x4d, 0xc8, 0x1c, 0x90
+	};
+	unsigned char nodes[TEST_TREES_TOTAL_LEAVES*SPHINCS_BYTES];
+	int i = 0, j = 0;
+
+	/* Copy all leaves */
+	memcpy(nodes, leaves, TEST_TREES_TOTAL_LEAVES*SPHINCS_BYTES);
+
+	/* Computes root */
+	TREE_CONSTRUCTION(i, j, TEST_TREES_TOTAL_LEAVES, nodes);
+
+	/* Checks correctness of computed root */
+	mu_assert("Straightforward root construction failed.",
+	          array_cmp(nodes, exp_root, SPHINCS_BYTES));
+
+	return ""; /* Success */
+}
+
+static char const * test_tree_construction_mask_balanced(void)
+{
+	unsigned char const exp_root[SPHINCS_BYTES] =
+	{
+		0xb2, 0x2a, 0x7f, 0x2a, 0xc8, 0xe2, 0x25, 0x6f,
+		0x3b, 0x00, 0xc1, 0xe1, 0xd3, 0xe4, 0x48, 0xc3,
+		0x0d, 0xb3, 0x43, 0xa0, 0x34, 0xf3, 0x50, 0x28,
+		0xff, 0x62, 0xaa, 0x21, 0x2e, 0x64, 0x9d, 0x80
+	};
+	unsigned char nodes[TEST_TREES_TOTAL_LEAVES*SPHINCS_BYTES];
+	int i = 0, j = 0, h = 0;
+
+	/* Copy all leaves */
+	memcpy(nodes, leaves, TEST_TREES_TOTAL_LEAVES*SPHINCS_BYTES);
+
+	/* Computes root */
+	TREE_CONSTRUCTION_MASK(i, j, h, TEST_TREES_TOTAL_LEAVES, nodes, in_masks);
+
+	/* Checks correctness of computed root */
+	mu_assert("Straightforward root construction failed.",
+	          array_cmp(nodes, exp_root, SPHINCS_BYTES));
+
+	return ""; /* Success */
+}
+
+static char const * test_tree_construction_unbalanced(void)
+{
+	unsigned char const exp_root[SPHINCS_BYTES] =
+	{
+		0x53, 0xcf, 0x62, 0x13, 0x03, 0x98, 0x43, 0x89,
+		0xa2, 0xe6, 0x30, 0xaf, 0xb8, 0x41, 0xce, 0x66,
+		0x0e, 0x03, 0x6f, 0xd6, 0x03, 0x83, 0xc4, 0x68,
+		0x72, 0x29, 0xf1, 0x1d, 0x0c, 0xd5, 0xed, 0x6a
+	};
+	unsigned char nodes[TEST_TREES_CUT_LEAVES*SPHINCS_BYTES];
+	int i = 0, j = 0;
+
+	/* Copy all leaves */
+	memcpy(nodes, leaves, TEST_TREES_CUT_LEAVES*SPHINCS_BYTES);
+
+	/* Computes root */
+	TREE_CONSTRUCTION(i, j, TEST_TREES_CUT_LEAVES, nodes);
+
+	/* Checks correctness of computed root */
+	mu_assert("Straightforward root construction failed.",
+	          array_cmp(nodes, exp_root, SPHINCS_BYTES));
+
+	return ""; /* Success */
+}
+
+static char const * test_tree_construction_mask_unbalanced(void)
+{
+	unsigned char const exp_root[SPHINCS_BYTES] =
+	{
+		0x73, 0x32, 0xa0, 0xaa, 0xcf, 0xae, 0x72, 0x24,
+		0xa5, 0xe0, 0x27, 0xda, 0x66, 0x35, 0x00, 0xad,
+		0x9d, 0x03, 0x61, 0x8b, 0x04, 0x95, 0x57, 0x28,
+		0x44, 0x2d, 0xa8, 0xc1, 0x6d, 0xf8, 0x04, 0x07
+	};
+	unsigned char nodes[TEST_TREES_CUT_LEAVES*SPHINCS_BYTES];
+	int i = 0, j = 0, h = 0;
+
+	/* Copy all leaves */
+	memcpy(nodes, leaves, TEST_TREES_CUT_LEAVES*SPHINCS_BYTES);
+
+	/* Computes root */
+	TREE_CONSTRUCTION_MASK(i, j, h, TEST_TREES_CUT_LEAVES, nodes, in_masks);
+
+	/* Checks correctness of computed root */
+	mu_assert("Straightforward root construction failed.",
+	          array_cmp(nodes, exp_root, SPHINCS_BYTES));
+
+	return ""; /* Success */
 }
 
 static char const * test_l_treehash_balanced(void)
@@ -101,7 +205,7 @@ static char const * test_l_treehash_balanced(void)
 	struct Stack stack;
 	stack.index = -1;
 
-	unsigned char const layers[(2*LEAVES_TOTAL - 1)*SPHINCS_BYTES] = {
+	unsigned char const layers[TEST_TREES_TOTAL_LAYERS_NODES*SPHINCS_BYTES] = {
 		/* layer 0 */
 		0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
 		0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
@@ -189,10 +293,10 @@ static char const * test_l_treehash_balanced(void)
 		0x58, 0x07, 0xa0, 0x82, 0x4d, 0xc8, 0x1c, 0x90,
 	};
 
-	/* test cases for each step of the treehash (except for the first one) */
+	/* Test cases for each step of the treehash (except for the first one) */
 	leaf = 0;
 	leafcalc_balanced(&node, leaf++);
-	for (i = 1; i < 2*LEAVES_TOTAL - 1; ++i)
+	for (i = 1; i < TEST_TREES_TOTAL_LAYERS_NODES; ++i)
 	{
 		leaf = l_treehash(&node, &stack, 1, leaf, leafcalc_balanced);
 		printf("\n * i = %d, node: (id=%d, h=%d) \t", i, node.id, node.level);
@@ -202,11 +306,11 @@ static char const * test_l_treehash_balanced(void)
 	}
 	printf("\n");
 
-	/* test case for direct root computation (depth = 2*LEAVES_TOTAL - 1)  */
+	/* Test case for direct root computation (depth = 2*LEAVES_TOTAL - 1)  */
 	printf("\nDirect root computation... \t");
-	l_treehash(&node, &stack, 2*LEAVES_TOTAL - 1, 0, leafcalc_balanced);
+	l_treehash(&node, &stack, TEST_TREES_TOTAL_LAYERS_NODES, 0, leafcalc_balanced);
 	mu_assert("Test case failed for direct computation",
-	          array_cmp(node.hash, layers + ((2*LEAVES_TOTAL - 1) - 1)*SPHINCS_BYTES, SPHINCS_BYTES));
+	          array_cmp(node.hash, layers + (TEST_TREES_TOTAL_LAYERS_NODES - 1)*SPHINCS_BYTES, SPHINCS_BYTES));
 	printf("[OK]\n");
 
 	return NULL; /* Skip */
@@ -220,7 +324,7 @@ static char const * test_l_treehash_unbalanced(void)
 	struct Stack stack;
 	stack.index = -1;
 
-	unsigned char const layers[(2*LEAVES_CUT - 1)*SPHINCS_BYTES] = {
+	unsigned char const layers[TEST_TREES_CUT_LAYERS_NODES*SPHINCS_BYTES] = {
 		/* layer 0 */
 		0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
 		0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
@@ -274,10 +378,10 @@ static char const * test_l_treehash_unbalanced(void)
 		0x72, 0x29, 0xf1, 0x1d, 0x0c, 0xd5, 0xed, 0x6a
 	};
 
-	/* test cases for each step of the treehash (except for the first one) */
+	/* Test cases for each step of the treehash (except for the first one) */
 	leaf = 0;
 	leafcalc_unbalanced(&node, leaf++);
-	for (i = 1; i < 2*LEAVES_CUT - 1; ++i)
+	for (i = 1; i < TEST_TREES_CUT_LAYERS_NODES; ++i)
 	{
 		leaf = l_treehash(&node, &stack, 1, leaf, leafcalc_unbalanced);
 		printf("\n * i = %d, node: (id=%d, h=%d) \t", i, node.id, node.level);
@@ -287,11 +391,11 @@ static char const * test_l_treehash_unbalanced(void)
 	}
 	printf("\n");
 
-	/* test case for direct root computation (depth = 2*LEAVES_CUT - 1)  */
+	/* Test case for direct root computation (depth = 2*LEAVES_CUT - 1)  */
 	printf("\nDirect root computation... \t");
-	l_treehash(&node, &stack, 2*LEAVES_CUT - 1, 0, leafcalc_unbalanced);
+	l_treehash(&node, &stack, TEST_TREES_CUT_LAYERS_NODES, 0, leafcalc_unbalanced);
 	mu_assert("Test case failed for direct computation",
-	array_cmp(node.hash, layers + ((2*LEAVES_CUT - 1) - 1)*SPHINCS_BYTES, SPHINCS_BYTES));
+	          array_cmp(node.hash, layers + (TEST_TREES_CUT_LAYERS_NODES - 1)*SPHINCS_BYTES, SPHINCS_BYTES));
 	printf("[OK]\n");
 
 	return NULL; /* Skip */
@@ -305,7 +409,7 @@ static char const * test_l_treehash_mask_balanced(void)
 	struct Stack stack;
 	stack.index = -1;
 
-	unsigned char const layers[(2*LEAVES_TOTAL - 1)*SPHINCS_BYTES] = {
+	static unsigned char const layers[TEST_TREES_TOTAL_LAYERS_NODES*SPHINCS_BYTES] = {
 		/* layer 0 */
 		0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
 		0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
@@ -396,7 +500,7 @@ static char const * test_l_treehash_mask_balanced(void)
 	/* test cases for each step of the treehash (except for the first one) */
 	leaf = 0;
 	leafcalc_balanced(&node, leaf++);
-	for (i = 1; i < 2*LEAVES_TOTAL - 1; ++i)
+	for (i = 1; i < TEST_TREES_TOTAL_LAYERS_NODES; ++i)
 	{
 		leaf = l_treehash_mask(&node, &stack, 1, leaf, leafcalc_balanced, in_masks);
 		printf("\n * i = %d, node: (id=%d, h=%d) \t", i, node.id, node.level);
@@ -408,9 +512,9 @@ static char const * test_l_treehash_mask_balanced(void)
 
 	/* test case for direct root computation (depth = 2*LEAVES_TOTAL - 1)  */
 	printf("\nDirect root computation... \t");
-	l_treehash_mask(&node, &stack, 2*LEAVES_TOTAL - 1, 0, leafcalc_balanced, in_masks);
+	l_treehash_mask(&node, &stack, TEST_TREES_TOTAL_LAYERS_NODES, 0, leafcalc_balanced, in_masks);
 	mu_assert("Test case failed for direct computation",
-	array_cmp(node.hash, layers + ((2*LEAVES_TOTAL - 1) - 1)*SPHINCS_BYTES, SPHINCS_BYTES));
+	          array_cmp(node.hash, layers + (TEST_TREES_TOTAL_LAYERS_NODES - 1)*SPHINCS_BYTES, SPHINCS_BYTES));
 	printf("[OK]\n");
 
 	return NULL; /* Skip */
@@ -424,7 +528,7 @@ static char const * test_l_treehash_mask_unbalanced(void)
 	struct Stack stack;
 	stack.index = -1;
 
-	unsigned char const layers[(2*LEAVES_CUT - 1)*SPHINCS_BYTES] = {
+	unsigned char const layers[TEST_TREES_CUT_LAYERS_NODES*SPHINCS_BYTES] = {
 		/* layer 0 */
 		0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
 		0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
@@ -478,10 +582,10 @@ static char const * test_l_treehash_mask_unbalanced(void)
 		0x44, 0x2d, 0xa8, 0xc1, 0x6d, 0xf8, 0x04, 0x07
 	};
 
-	/* test cases for each step of the treehash (except for the first one) */
+	/* Test cases for each step of the treehash (except for the first one) */
 	leaf = 0;
 	leafcalc_unbalanced(&node, leaf++);
-	for (i = 1; i < 2*LEAVES_CUT - 1; ++i)
+	for (i = 1; i < TEST_TREES_CUT_LAYERS_NODES; ++i)
 	{
 		leaf = l_treehash_mask(&node, &stack, 1, leaf, leafcalc_unbalanced, in_masks);
 		printf("\n * i = %d, node: (id=%d, h=%d) \t", i, node.id, node.level);
@@ -493,9 +597,9 @@ static char const * test_l_treehash_mask_unbalanced(void)
 
 	/* test case for direct root computation (depth = 2*LEAVES_CUT - 1)  */
 	printf("\nDirect root computation... \t");
-	l_treehash_mask(&node, &stack, 2*LEAVES_CUT - 1, 0, leafcalc_unbalanced, in_masks);
+	l_treehash_mask(&node, &stack, TEST_TREES_CUT_LAYERS_NODES, 0, leafcalc_unbalanced, in_masks);
 	mu_assert("Test case failed for direct computation",
-	array_cmp(node.hash, layers + ((2*LEAVES_CUT - 1) - 1)*SPHINCS_BYTES, SPHINCS_BYTES));
+	          array_cmp(node.hash, layers + (TEST_TREES_CUT_LAYERS_NODES - 1)*SPHINCS_BYTES, SPHINCS_BYTES));
 	printf("[OK]\n");
 
 	return NULL; /* Skip */
@@ -506,6 +610,10 @@ void run_test_trees(void)
 {
 	printf("### TEST_TREES ###\n\n");
 
+	mu_run_test(test_tree_construction_balanced, "test_tree_construction_balanced()");
+	mu_run_test(test_tree_construction_mask_balanced, "test_tree_construction_mask_balanced()");
+	mu_run_test(test_tree_construction_unbalanced, "test_tree_construction_unbalanced()");
+	mu_run_test(test_tree_construction_mask_unbalanced, "test_tree_construction_mask_unbalanced()");
 	mu_run_test(test_l_treehash_balanced, "test_l_treehash_balanced()");
 	mu_run_test(test_l_treehash_unbalanced, "test_l_treehash_unbalanced()");
 	mu_run_test(test_l_treehash_mask_balanced, "test_l_treehash_mask_balanced()");

@@ -4,6 +4,7 @@
  */
 
 #include "parameters.h"
+#include <string.h>
 
 #ifndef TREES_H_
 #define TREES_H_
@@ -11,20 +12,31 @@
 /* The stack cannot contain more than one node at each level */
 #define STACK_MAX_SIZE HORST_TAU
 
-#define TREE_CONSTRUCTION(i, j, init, height, leaves) do { \
-	for (i = init; i < height; ++i) { \
-		for (j = 0; j < (1 << (height - i)); ++j) { \
-			hash_nn_n(leaves + j*SPHINCS_BYTES, leaves + (2*j)*SPHINCS_BYTES, \
-			          leaves + (2*j+1)*SPHINCS_BYTES); \
+#define INT_CEIL(x, y) 1 + ((x - 1) / y)
+
+#define TREE_CONSTRUCTION(i, j, total, leaves) do { \
+	for (i = total; i > 1; i = INT_CEIL(i, 2)) { \
+		for (j = 0; j < i; j += 2) { \
+			if (j + 2 > i) { \
+				memcpy(leaves + (j/2)*SPHINCS_BYTES, leaves + (j)*SPHINCS_BYTES, SPHINCS_BYTES); \
+			} else { \
+				hash_nn_n(leaves + (j/2)*SPHINCS_BYTES, leaves + (j)*SPHINCS_BYTES, \
+				          leaves + (j+1)*SPHINCS_BYTES); \
+			} \
 		} \
 	} \
 } while (0)
 
-#define TREE_CONSTRUCTION_MASK(i, j, init, height, leaves, masks) do { \
-	for (i = init; i < height; ++i) { \
-		for (j = 0; j < (1 << (height - i)); ++j) { \
-			hash_nn_n_mask(leaves + j*SPHINCS_BYTES, leaves + (2*j)*SPHINCS_BYTES, \
-			               leaves + (2*j+1)*SPHINCS_BYTES, masks + 2*i*SPHINCS_BYTES); \
+#define TREE_CONSTRUCTION_MASK(i, j, h, total, leaves, masks) do { \
+	for (i = total, h = 0; i > 1; i = INT_CEIL(i, 2), h++) { \
+		for (j = 0; j < i; j += 2) { \
+			if (j + 2 > i) { \
+				memcpy(leaves + (j/2)*SPHINCS_BYTES, leaves + (j)*SPHINCS_BYTES, SPHINCS_BYTES); \
+			} else { \
+				hash_nn_n_mask(leaves + (j/2)*SPHINCS_BYTES, leaves + (j)*SPHINCS_BYTES, \
+				               leaves + (j+1)*SPHINCS_BYTES, \
+				               masks + (2*h)*SPHINCS_BYTES); \
+			} \
 		} \
 	} \
 } while(0)

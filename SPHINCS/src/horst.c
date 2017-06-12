@@ -343,7 +343,8 @@ int horst_verify_opti(unsigned char const digest[SPHINCS_DIGEST_BYTES],
 	}
 
 	/* Computes tree root from top layer */
-	TREE_CONSTRUCTION_MASK(i, j, HORST_MAX_LEVEL, HORST_TAU, top_layer, masks);
+	TREE_CONSTRUCTION_MASK(i, j, top_layer_idx, HORST_MAX_LEVEL_NODES, top_layer,
+	                       masks + 2*HORST_MAX_LEVEL*SPHINCS_BYTES);
 
 	/* Compare tree root with public key */
 	for (i = 0; i < SPHINCS_BYTES; ++i)
