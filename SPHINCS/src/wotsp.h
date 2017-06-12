@@ -9,11 +9,11 @@
 #include "parameters.h"
 
 /*
- * Prints WOTS+ public key on stdout associated with the provided seed and
- * masks.
+ * Generates WOTS+ public key associated with the provided seed and masks.
  */
 
-int wotsp_keygen(unsigned char const seed[SEED_BYTES],
+int wotsp_keygen(unsigned char y[WOTS_L*SPHINCS_BYTES],
+                 unsigned char const seed[SEED_BYTES],
                  unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES]);
 
 /*

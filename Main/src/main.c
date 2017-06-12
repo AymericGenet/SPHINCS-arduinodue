@@ -121,7 +121,7 @@ int main(void)
 
 	/* Generate WOTS+ keypair */
 	puts("Generating WOTS+ keypair...\n");
-	wotsp_keygen(sk_1, masks);
+	wotsp_keygen(y, sk_1, masks);
 
 	puts("X = ");
 	for (i = 0; i < SPHINCS_BYTES*WOTS_L; ++i)
