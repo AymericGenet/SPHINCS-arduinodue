@@ -40,7 +40,8 @@ static int horst_leafcalc(struct Node * node, unsigned int leaf)
 }
 
 
-int horst_keygen(unsigned char const seed[SEED_BYTES],
+int horst_keygen(unsigned char y[SPHINCS_BYTES],
+                 unsigned char const seed[SEED_BYTES],
                  unsigned char const masks[HORST_TAU*SPHINCS_BYTES])
 {
 	int i = 0;
@@ -56,10 +57,10 @@ int horst_keygen(unsigned char const seed[SEED_BYTES],
 
 	prng_context_delete(&ctx);
 
-	/* Outputs on the stdout */
+	/* Copies on the public-key */
 	for (i = 0; i < SPHINCS_BYTES; ++i)
 	{
-		printf("%02x", node.hash[i]);
+		y[i] = node.hash[i];
 	}
 
 	return 0;

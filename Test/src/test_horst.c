@@ -428,6 +428,13 @@ const char mock_stream[LENGTH] = "(sk=172) 9892a13ac98cfdb0851e03a4da6875690867c
 
 int i = 0;
 
+static unsigned char const exp_y[SPHINCS_BYTES] = {
+	0x8f, 0x23, 0x02, 0x05, 0xdc, 0xc9, 0x92, 0x65,
+	0x1a, 0x6a, 0xe1, 0x8a, 0x3e, 0x53, 0x0d, 0x67,
+	0x73, 0xe4, 0xa9, 0x0c, 0x9a, 0x35, 0xb6, 0x0a,
+	0xf5, 0x7a, 0x10, 0xf0, 0xa1, 0x5a, 0x30, 0xec,
+};
+
 static int sig_stream(void)
 {
 	if (i < 0 || i >= LENGTH)
@@ -439,11 +446,14 @@ static int sig_stream(void)
 
 static char const * test_horst_keygen(void)
 {
+	unsigned char y[SPHINCS_BYTES];
 	/* keygen with in_sk1 and in_masks */
-	printf("(this may take a few seconds)\n");
-	horst_keygen(in_sk1, in_masks);
+	printf("(this may take a few seconds) ");
+	horst_keygen(y, in_sk1, in_masks);
 
-	return NULL; /* Skip */
+	mu_assert("Public-key invalid.", array_cmp(y, exp_y, SPHINCS_BYTES));
+
+	return ""; /* Success */
 }
 
 static char const * test_horst_sign(void)
@@ -452,7 +462,7 @@ static char const * test_horst_sign(void)
 	printf("(this may take a few seconds)\n");
 	horst_sign(in1_hashed_512, in_sk1, in_masks);
 
-	return NULL;
+	return NULL; /* Skip */
 }
 
 static char const * test_horst_sign_opti(void)
@@ -461,22 +471,15 @@ static char const * test_horst_sign_opti(void)
 	printf("(this may take a few seconds)\n");
 	horst_sign_opti(in1_hashed_512, in_sk1, in_masks);
 
-	return NULL;
+	return NULL; /* Skip */
 }
 
 static char const * test_horst_verify_opti(void)
 {
-	unsigned char const y[SPHINCS_BYTES] = {
-		0x8f, 0x23, 0x02, 0x05, 0xdc, 0xc9, 0x92, 0x65,
-		0x1a, 0x6a, 0xe1, 0x8a, 0x3e, 0x53, 0x0d, 0x67,
-		0x73, 0xe4, 0xa9, 0x0c, 0x9a, 0x35, 0xb6, 0x0a,
-		0xf5, 0x7a, 0x10, 0xf0, 0xa1, 0x5a, 0x30, 0xec,
-	};
-
 	/* checks correctness of in1_hashed_512 signature */
-	mu_assert("Signature should be valid.", horst_verify_opti(in1_hashed_512, y, sig_stream, in_masks));
+	mu_assert("Signature should be valid.", horst_verify_opti(in1_hashed_512, exp_y, sig_stream, in_masks));
 
-	return "";
+	return ""; /* Success */
 }
 
 

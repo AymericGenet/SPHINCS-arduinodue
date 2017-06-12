@@ -9,14 +9,14 @@
 #define HORST_H_
 
 /*
- * Prints HORST public key on stdout associated with the provided seed and
- * masks.
+ * Generates HORST public key associated with the provided seed and masks.
  *
  * The key generation uses the treehash algorithm to compute the root of the
  * HORST tree.
  */
 
-int horst_keygen(unsigned char const seed[SEED_BYTES],
+int horst_keygen(unsigned char y[SPHINCS_BYTES],
+                 unsigned char const seed[SEED_BYTES],
                  unsigned char const masks[HORST_TAU*SPHINCS_BYTES]);
 
 /*
