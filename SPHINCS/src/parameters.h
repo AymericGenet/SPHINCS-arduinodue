@@ -32,6 +32,7 @@
 #define HORST_K 32
 #define HORST_SK_BYTES 32
 #define HORST_MAX_LEVEL 10
+#define HORST_MAX_LEVEL_NODES 64 /* (1 << (HORST_TAU - HORST_MAX_LEVEL)) */
 #define HORST_TRUNC_TREEHASH_ROUNDS 130944 /* ((1 << HORST_MAX_LEVEL) - 1)
                                                * (1 << (HORST_TAU - HORST_MAX_LEVEL + 1)) */
 #define HORST_SIG_BYTES 13312 /* ((1 << (HORST_TAU - HORST_MAX_LEVEL))*SPHINCS_BYTES
