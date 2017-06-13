@@ -1,5 +1,5 @@
 /*
- * test_SPHINCS.h
+ * test_sphincs.h
  *
  */
 

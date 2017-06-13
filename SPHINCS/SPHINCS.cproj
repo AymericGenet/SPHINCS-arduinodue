@@ -106,6 +106,12 @@
     <Compile Include="src\prng.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\sphincs.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\sphincs.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\trees.c">
       <SubType>compile</SubType>
     </Compile>
