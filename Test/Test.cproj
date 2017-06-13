@@ -532,6 +532,12 @@
     <Compile Include="src\test_horst.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\test_prf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\test_prf.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\test_prng.c">
       <SubType>compile</SubType>
     </Compile>
