@@ -24,6 +24,7 @@
 #define MSS_TREE_HEIGHT 5
 #define MSS_LEVELS 12
 #define MSS_TOTALTREE_HEIGHT 60 /* (MSS_TREE_HEIGHT*MSS_LEVELS) */
+#define MSS_TOTAL_LEAVES 32 /* (1 << MSS_TREE_HEIGHT) */
 
 /* PRNG parameters */
 #define SEED_BYTES 32 /* SPHINCS_BYTES */
