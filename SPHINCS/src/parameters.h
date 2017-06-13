@@ -7,6 +7,9 @@
 #define SPHINCS_N 256
 #define SPHINCS_BYTES 32 /* (SPHINCS_N/8) */
 #define SPHINCS_DIGEST_BYTES 64 /* (2*SPHINCS_BYTES) */
+#define SPHINCS_ADDRESS_BYTES 8 /* (log2(MSS_LEVELS + 1)
+                                    + (MSS_LEVELS - 1)*(MSS_TREE_HEIGHT)
+                                    + (MSS_TREE_HEIGHT))/8 */
 
 /* Key sizes */
 #define MASKS_AMOUNT 32 /* max(2*(MSS_TREE_HEIGHT + WOTS_LOG_L),
