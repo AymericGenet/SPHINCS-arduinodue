@@ -47,6 +47,7 @@
 #include "test_utils.h"
 #include "test_hash.h"
 #include "test_prng.h"
+#include "test_prf.h"
 #include "test_wotsp.h"
 #include "test_trees.h"
 #include "test_sphincs.h"
@@ -89,12 +90,13 @@ static void configure_console(void)
 }
 
 /* Test functions to execute */
-#define SUITES_AMOUNT 7
+#define SUITES_AMOUNT 8
 
 void (*tests[SUITES_AMOUNT])(void) = {
 	run_test_utils,
 	run_test_hash,
 	run_test_prng,
+	run_test_prf,
 	run_test_wotsp,
 	run_test_trees,
 	run_test_horst,

@@ -31,6 +31,9 @@ extern unsigned char const in_masks[MASKS_BYTES];
 #define PRNG_STREAM_LEN 128
 extern unsigned char const prng_stream[PRNG_STREAM_LEN];
 
+/* address : 8 bytes of valid HORST addressing */
+extern unsigned char const prf_address[SPHINCS_ADDRESS_BYTES];
+
 /*
  * Returns 1 (True) if the content from arr1 is the same as in arr2 up to len,
  * or 0 (False) otherwise.

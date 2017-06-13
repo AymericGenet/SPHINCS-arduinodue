@@ -94,6 +94,12 @@
     <Compile Include="src\parameters.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\prf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\prf.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\prng.c">
       <SubType>compile</SubType>
     </Compile>

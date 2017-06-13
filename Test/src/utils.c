@@ -256,6 +256,10 @@ unsigned char const prng_stream[PRNG_STREAM_LEN] = {
 	0x08, 0xd1, 0xa0, 0x8f, 0x3f, 0x26, 0x7e, 0x9d
 };
 
+unsigned char const prf_address[SPHINCS_ADDRESS_BYTES] = {
+	0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0
+};
+
 int array_cmp(unsigned char const * arr1, unsigned char const * arr2, int len)
 {
 	int i;
