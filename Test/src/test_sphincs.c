@@ -19,7 +19,7 @@ static unsigned char const exp_y[SPHINCS_BYTES] = {
 
 static char const * test_sphincs_keygen(void)
 {
-	unsigned char y[SPHINCS_BYTES];
+	unsigned char y[PK_BYTES];
 
 	/* Generate public key with in_sk and in_masks */
 	sphincs_keygen(y, in_sk, in_masks);
@@ -29,12 +29,22 @@ static char const * test_sphincs_keygen(void)
 	return ""; /* Success */
 }
 
+static char const * test_sphincs_sign(void)
+{
+	/* sign with in_sk1, in_masks, and in1_hashed_512 */
+	printf("(this may take a few seconds)\n");
+	sphincs_sign(in2, IN2_LEN, in_sk, in_masks);
+
+	return NULL; /* Skip */
+}
+
 
 void run_test_sphincs(void)
 {
 	printf("### TEST_SPHINCS ###\n\n");
 
 	mu_run_test(test_sphincs_keygen, "test_sphincs_keygen()");
+	mu_run_test(test_sphincs_sign, "test_sphincs_sign()");
 
 	printf("\n");
 }
