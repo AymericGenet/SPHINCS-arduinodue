@@ -26,6 +26,21 @@ int hash_any_2n(unsigned char * out, unsigned char const * in,
 	return 0;
 }
 
+int hash_any_n_2n(unsigned char out[2*SPHINCS_BYTES],
+                  unsigned char const in1[SPHINCS_BYTES],
+                  unsigned char const * in2, unsigned long const in2len)
+{
+	blake512_state S;
+	blake512_init(&S);
+	blake512_update(&S, in1, SPHINCS_BYTES*8);
+	if (in2len > 0)
+	{
+		blake512_update(&S, in2, in2len*8);
+	}
+	blake512_final(&S, out);
+	return 0;
+}
+
 int hash_n_n(unsigned char * out, unsigned char const * in)
 {
 	int i;
