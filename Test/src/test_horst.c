@@ -12,7 +12,7 @@
 
 #define LENGTH 32665
 
-const char mock_stream[LENGTH] = "(sk=172) 9892a13ac98cfdb0851e03a4da6875690867c504d3073f46ad6591578a509b45\n"
+static const char mock_stream[LENGTH] = "(sk=172) 9892a13ac98cfdb0851e03a4da6875690867c504d3073f46ad6591578a509b45\n"
 	"(sk=1581) b8eba8d1fef24680f0a9f87c7ffa7028e563d57b0332bad643c391bfcf1be1b2\n"
 	"(sk=3269) 66da66620c042c6a5be089c6e2bb04d38393b3aea7073fe1fef9888e6624efcf\n"
 	"(sk=4001) 197534b06e3c4b768b8706a0cf64fffd6ca777bed96a3fd88063ff4912ab8f68\n"
@@ -426,7 +426,7 @@ const char mock_stream[LENGTH] = "(sk=172) 9892a13ac98cfdb0851e03a4da6875690867c
 	"(h=10, id=62) 8cb00b63b482c7253062a32897501d0eff21e7a541afc597097acd9ea15c492d\n"
 	"(h=10, id=63) 3d54d513f30220cb448541ebc7026a5083a6cc93268915f315c65a59087278c1\n";
 
-int i = 0;
+static int i = 0;
 
 static unsigned char const exp_y[SPHINCS_BYTES] = {
 	0x8f, 0x23, 0x02, 0x05, 0xdc, 0xc9, 0x92, 0x65,
