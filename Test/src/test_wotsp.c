@@ -368,7 +368,7 @@ static char const * test_wotsp_keygen(void)
 	unsigned char y[WOTS_L*SPHINCS_BYTES];
 
 	/* Generate public key with in_sk and in_masks */
-	wotsp_keygen(y, in_sk1, in_masks);
+	wotsp_keygen(y, in_sk, in_masks);
 
 	mu_assert("Public key invalid.", array_cmp(y, exp_y, WOTS_L*SPHINCS_BYTES));
 
@@ -379,7 +379,7 @@ static char const * test_wotsp_sign(void)
 {
 	/* Sign empty string with in_sk1 and in_masks */
 	printf("\n");
-	wotsp_sign(in1_hashed_256, in_sk1, in_masks);
+	wotsp_sign(in1_hashed_256, in_sk, in_masks);
 
 	return NULL; /* Skip */
 }

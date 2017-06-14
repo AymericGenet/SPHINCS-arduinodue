@@ -22,7 +22,7 @@ static char const * test_sphincs_keygen(void)
 	unsigned char y[SPHINCS_BYTES];
 
 	/* Generate public key with in_sk and in_masks */
-	sphincs_keygen(y, in_sk1, in_masks);
+	sphincs_keygen(y, in_sk, in_masks);
 
 	mu_assert("Public key invalid.", array_cmp(y, exp_y, SPHINCS_BYTES));
 

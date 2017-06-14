@@ -449,7 +449,7 @@ static char const * test_horst_keygen(void)
 	unsigned char y[SPHINCS_BYTES];
 	/* keygen with in_sk1 and in_masks */
 	printf("(this may take a few seconds) ");
-	horst_keygen(y, in_sk1, in_masks);
+	horst_keygen(y, in_sk, in_masks);
 
 	mu_assert("Public-key invalid.", array_cmp(y, exp_y, SPHINCS_BYTES));
 
@@ -460,7 +460,7 @@ static char const * test_horst_sign(void)
 {
 	/* sign with in_sk1, in_masks, and in1_hashed_512 */
 	printf("(this may take a few seconds)\n");
-	horst_sign(in1_hashed_512, in_sk1, in_masks);
+	horst_sign(in1_hashed_512, in_sk, in_masks);
 
 	return NULL; /* Skip */
 }
@@ -469,7 +469,7 @@ static char const * test_horst_sign_opti(void)
 {
 	/* sign with in_sk1, in_masks, and in1_hashed_512 */
 	printf("(this may take a few seconds)\n");
-	horst_sign_opti(in1_hashed_512, in_sk1, in_masks);
+	horst_sign_opti(in1_hashed_512, in_sk, in_masks);
 
 	return NULL; /* Skip */
 }

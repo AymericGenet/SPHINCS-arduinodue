@@ -16,19 +16,19 @@ static char const * test_prng(void)
 	unsigned char out[128];
 
 	/* Call 1 byte */
-	prng(out, 1, in_sk1);
+	prng(out, 1, in_sk);
 	mu_assert("Test case failed for PRNG call of 1 byte.", array_cmp(out, prng_stream, 1));
 
 	/* Call 32 bytes */
-	prng(out, 32, in_sk1);
+	prng(out, 32, in_sk);
 	mu_assert("Test case failed for PRNG call of 32 bytes.", array_cmp(out, prng_stream, 32));
 
 	/* Call 64 bytes */
-	prng(out, 64, in_sk1);
+	prng(out, 64, in_sk);
 	mu_assert("Test case failed for PRNG call of 64 bytes.", array_cmp(out, prng_stream, 64));
 
 	/* Call 128 bytes */
-	prng(out, 128, in_sk1);
+	prng(out, 128, in_sk);
 	mu_assert("Test case failed for PRNG call of 128 bytes.", array_cmp(out, prng_stream, 128));
 
 	return ""; /* Success */
@@ -40,7 +40,7 @@ static char const * test_prng_next(void)
 	unsigned char out[PRNG_BYTES];
 
 	/* Setup */
-	prng_context_setup(&ctx, in_sk1);
+	prng_context_setup(&ctx, in_sk);
 
 	/* Call 64 first bytes */
 	prng_next(&ctx, out);
