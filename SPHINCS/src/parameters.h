@@ -7,9 +7,14 @@
 #define SPHINCS_N 256
 #define SPHINCS_BYTES 32 /* (SPHINCS_N/8) */
 #define SPHINCS_DIGEST_BYTES 64 /* (2*SPHINCS_BYTES) */
+
+/* SPHINCS addressing */
 #define SPHINCS_ADDRESS_BYTES 8 /* (log2(MSS_LEVELS + 1)
                                     + (MSS_LEVELS - 1)*(MSS_TREE_HEIGHT)
                                     + (MSS_TREE_HEIGHT))/8 */
+#define SPHINCS_LEVEL_ADDRESS_BITS 4
+#define SPHINCS_TREE_ADDRESS_BITS 59
+#define SPHINCS_LEAF_ADDRESS_BITS 5
 
 /* Key sizes */
 #define MASKS_AMOUNT 32 /* max(2*(MSS_TREE_HEIGHT + WOTS_LOG_L),
@@ -17,8 +22,8 @@
                                2*log2(HORST_T))
                            = 2*log2(HORST_T) */
 #define MASKS_BYTES 1024 /* (MASKS_AMOUNT*SPHINCS_BYTES) */
-#define SK_BYTES 1088 /* (2*SPHINCS_BYTES) + MASKS_BYTES */
-#define PK_BYTES 1056 /* (1*SPHINCS_BYTES) + MASKS_BYTES */
+#define SK_BYTES 64 /* (2*SPHINCS_BYTES) */
+#define PK_BYTES 32 /* (1*SPHINCS_BYTES) */
 
 /* Merkle's trees parameters and quantities */
 #define MSS_TREE_HEIGHT 5
