@@ -544,10 +544,10 @@
     <Compile Include="src\test_prng.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\test_SPHINCS.c">
+    <Compile Include="src\test_sphincs.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\test_SPHINCS.h">
+    <Compile Include="src\test_sphincs.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\test_trees.c">
