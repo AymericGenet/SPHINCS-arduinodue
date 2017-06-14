@@ -25,7 +25,7 @@ int wotsp_keygen(unsigned char y[WOTS_L*SPHINCS_BYTES],
                  unsigned char const seed[SEED_BYTES],
                  unsigned char const masks[WOTS_MAX_INT*SPHINCS_BYTES])
 {
-	int i, j;
+	int i;
 
 	/* Recovers secret key with PRNG */
 	prng(y, WOTS_L*SPHINCS_BYTES, seed);
