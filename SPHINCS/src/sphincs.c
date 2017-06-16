@@ -72,7 +72,6 @@ int sphincs_sign(unsigned char const * message,
 	unsigned char * addr = R + SPHINCS_BYTES; /* Convenient pointer */
 
 	/* Retrieves secret pseudorandom value R with sk_2 */
-	memset(R, 0, 2*SPHINCS_BYTES);
 	prf(R, message, length, sk + SK_BYTES/2);
 	for (i = 0; i < SPHINCS_BYTES + SPHINCS_ADDRESS_BYTES; ++i)
 	{
@@ -127,7 +126,7 @@ int sphincs_sign(unsigned char const * message,
 
 			/* Generates WOTS+ public key and compresses it to the root of an L-tree */
 			wotsp_keygen(wots_pk, seed, masks);
-			//TREE_CONSTRUCTION_MASK(i, j, h, WOTS_L, wots_pk, masks);
+			TREE_CONSTRUCTION_MASK(i, j, h, WOTS_L, wots_pk, masks);
 
 			/* Stores WOTS+ compressed key as leaf of top tree */
 			for (i = 0; i < SPHINCS_BYTES; ++i)
@@ -169,6 +168,7 @@ int sphincs_sign(unsigned char const * message,
 		/* Copies on root so the next WOTS+ signs it */
 		for (i = 0; i < SPHINCS_BYTES; ++i)
 		{
+			seed[i] = 0;
 			root[i] = leaves[i + 0*SPHINCS_BYTES];
 		}
 	}
