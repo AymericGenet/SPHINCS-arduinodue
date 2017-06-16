@@ -158,7 +158,7 @@ int sphincs_sign(unsigned char const * message,
 					}
 				}
 				hash_nn_n_mask(leaves + (j/2)*SPHINCS_BYTES, leaves + (j)*SPHINCS_BYTES,
-				               leaves + (j+1)*SPHINCS_BYTES, masks + (2*i)*SPHINCS_BYTES);
+				               leaves + (j+1)*SPHINCS_BYTES, masks + 2*(WOTS_LOG_L + i)*SPHINCS_BYTES);
 			}
 
 			/* Authentication node from next layer */
