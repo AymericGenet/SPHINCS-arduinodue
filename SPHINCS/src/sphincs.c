@@ -148,16 +148,16 @@ int sphincs_sign(unsigned char const * message,
 			}
 
 			/* Prints authentication path while constructing tree */
-			for (j = 0; j < (1 << (MSS_TREE_HEIGHT - i)); ++j)
+			for (j = 0; j < (1 << (MSS_TREE_HEIGHT - i)); j += 2)
 			{
-				if (j == leafidx/2)
+				if (j/2 == leafidx/2)
 				{
 					for (h = 0; h < SPHINCS_BYTES; ++h)
 					{
 						printf("%02x", leaves[leafidx*SPHINCS_BYTES + h]);
 					}
 				}
-				hash_nn_n_mask(leaves + (j/2)*SPHINCS_BYTES, leaves + (j)*SPHINCS_BYTES,
+				hash_nn_n_mask(leaves + (j)*SPHINCS_BYTES, leaves + (j)*SPHINCS_BYTES,
 				               leaves + (j+1)*SPHINCS_BYTES, masks + 2*(WOTS_LOG_L + i)*SPHINCS_BYTES);
 			}
 
