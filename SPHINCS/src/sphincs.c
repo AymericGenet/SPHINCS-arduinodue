@@ -136,7 +136,7 @@ int sphincs_sign(unsigned char const * message,
 		}
 
 		/* Outputs MSS signature */
-		for (i = 0; i < MSS_TREE_HEIGHT - 1; ++i)
+		for (i = 0; i < MSS_TREE_HEIGHT; ++i)
 		{
 			/* Computes authentication id in leafidx */
 			if ((leafidx & 1) == 0)
@@ -147,17 +147,19 @@ int sphincs_sign(unsigned char const * message,
 				leafidx -= 1;
 			}
 
-			/* Prints authentication path while constructing tree */
+			/* Prints authentication path */
+			if (i < MSS_TREE_HEIGHT - 1)
+			{
+				for (j = 0; j < SPHINCS_BYTES; ++j)
+				{
+					printf("%02x", leaves[leafidx*SPHINCS_BYTES + j]);
+				}
+			}
+
+			/* Constructs tree */
 			for (j = 0; j < (1 << (MSS_TREE_HEIGHT - i)); j += 2)
 			{
-				if (j/2 == leafidx/2)
-				{
-					for (h = 0; h < SPHINCS_BYTES; ++h)
-					{
-						printf("%02x", leaves[leafidx*SPHINCS_BYTES + h]);
-					}
-				}
-				hash_nn_n_mask(leaves + (j)*SPHINCS_BYTES, leaves + (j)*SPHINCS_BYTES,
+				hash_nn_n_mask(leaves + (j/2)*SPHINCS_BYTES, leaves + (j)*SPHINCS_BYTES,
 				               leaves + (j+1)*SPHINCS_BYTES, masks + 2*(WOTS_LOG_L + i)*SPHINCS_BYTES);
 			}
 
