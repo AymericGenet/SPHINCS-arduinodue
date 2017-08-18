@@ -1,0 +1,28 @@
+BLAKE-256 reference eBASH implementation
+author: Jean-Philippe Aumasson (jeanphilippe.aumasson@gmail.com)
+
+Level of copyright protection: 0
+Level of patent protection: 0
+
+================================================================
+
+BLAKE-512 reference eBASH implementation
+author: Jean-Philippe Aumasson (jeanphilippe.aumasson@gmail.com)
+
+Level of copyright protection: 0
+Level of patent protection: 0
+
+================================================================
+
+ChaCha12 reference eSTREAM implementation
+author: Daniel J. Bernstein (djb@cr.yp.to)
+
+Implementors: Daniel J. Bernstein
+Intellectual Property : Free for any use.
+
+================================================================
+
+Sources
+
+eSTREAM Project: http://www.ecrypt.eu.org/stream/
+eBASH Project: https://bench.cr.yp.to/ebash.html
