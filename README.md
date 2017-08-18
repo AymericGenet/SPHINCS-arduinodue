@@ -25,6 +25,7 @@ References
 
  * Daniel J. Bernstein et al. "SPHINCS: practical stateless hash-based signatures". In: *IACR Cryptology ePrint Archive* 2014 (2014), p. 795. url: http://eprint.iacr.org/2014/795.
  * Andreas Hülsing, Joost Rijneveld, and Peter Schwabe. "ARMed SPHINCS - Computing a 41KB signature in 16KB of RAM". In: *IACR Cryptology ePrint Archive* 2015 (2015), p. 1042. url: http://eprint.iacr.org/2015/1042.
+ * Joost Rijneveld. "SPHINCS-py". GitHub repository. https://github.com/joostrijneveld/SPHINCS-py
 
 Contact
 =======
